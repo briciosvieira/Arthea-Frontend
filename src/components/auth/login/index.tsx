@@ -31,7 +31,7 @@ export function LoginForm() {
 
             const data = await res.json();
 
-            localStorage.setItem("userToken", data.token);
+            localStorage.setItem("token", data.token);
             localStorage.setItem("isLoggedIn", "true");
             window.dispatchEvent(new Event("loginStatusChanged"));
 

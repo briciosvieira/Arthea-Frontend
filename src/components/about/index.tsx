@@ -1,13 +1,14 @@
 import Image from "next/image";
 
-export function Abault() {
+export function About() {
 
   return (
-    <section className="w-full flex items-center justify-center">
-      <div
+    <main id="about"  className="w-full flex items-center justify-center scroll-smooth">
+      <section
         className="flex flex-col md:flex-row
             relative overflow-hidden p-10 md:p-8
            bg-[#FFF] 
+            mt-25
             ">
 
         <Image
@@ -16,7 +17,7 @@ export function Abault() {
           height={300}
           quality={100}
           alt="Logo"
-          className="rounded-xl object-cover "
+          className="rounded-xl object-cover items-center"
         />
         <div className="px-6 sm:px-10 py-10 flex justify-center">
           <div className="w-full">
@@ -39,7 +40,7 @@ export function Abault() {
             </p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }

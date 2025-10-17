@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Videoclip() {
     return (
-        <section className="relative h-[100vh] w-full overflow-hidden">
+        <section className="relative h-[100vh] w-full overflow-hidden z-55">
             <video autoPlay loop muted
                 className="absolute inset-0 h-full w-full object-cover"
             >

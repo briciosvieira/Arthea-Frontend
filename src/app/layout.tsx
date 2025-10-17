@@ -24,9 +24,8 @@ export default function RootLayout({
       <body
         className={josefin.className }
       >
-        <Header></Header>
+        
         {children}
-        <Footer />
       </body>
     </html>
   );
