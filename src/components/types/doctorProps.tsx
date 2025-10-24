@@ -6,5 +6,5 @@ export interface DoctorProps {
     about: string
     photoUrl: string
     active: boolean
-    hiredAt: Date
+    hiredAt: Date | string
 }

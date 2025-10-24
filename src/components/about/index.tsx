@@ -3,13 +3,10 @@ import Image from "next/image";
 export function About() {
 
   return (
-    <main id="about"  className="w-full flex items-center justify-center scroll-smooth">
+    <main id="about" className="w-full flex items-center justify-center scroll-smooth">
       <section
-        className="flex flex-col md:flex-row
-            relative overflow-hidden p-10 md:p-8
-           bg-[#FFF] 
-            mt-25
-            ">
+        className="flex flex-col md:flex-row relative overflow-hidden p-10 md:p-8
+           bg-[#FFF] mt-25 w-7xl">
 
         <Image
           src={"/team1.jpg"}

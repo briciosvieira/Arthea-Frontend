@@ -130,38 +130,78 @@ export class Service {
     // doctor
 
     async getDoctors(): Promise<{ doctor: DoctorProps[], total: number }> {
-        const res = await fetch(`${API_URL}/doctors`, {
+    const res = await fetch(`${API_URL}/doctors`, {
+        headers: this.headers,
+        cache: 'no-store'
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Erro ao buscar médicos');
+    }
+
+    const data = await res.json();
+    
+    // Adiciona a URL base nas fotos
+    if (data.doctor) {
+        data.doctor = data.doctor.map((doc: DoctorProps) => ({
+            ...doc,
+            photoUrl: doc.photoUrl ? `${API_URL}${doc.photoUrl}` : ''
+        }));
+    }
+
+    return data;
+}
+
+    async createDoctor(formData: FormData): Promise<DoctorProps> {
+    const token = this.getToken();
+    
+    const res = await fetch(`${API_URL}/doctors`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Erro ao criar médico');
+    }
+
+    return res.json();
+}
+
+async updateDoctor(id: string, formData: FormData): Promise<DoctorProps> {
+    const token = this.getToken();
+    
+    const res = await fetch(`${API_URL}/doctors/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || 'Erro ao atualizar médico');
+    }
+
+    return res.json();
+}
+
+    async deleteDoctor(id: String): Promise<void> {
+        const res = await fetch(`${API_URL}/doctors/${id}`, {
             headers: this.headers,
-            cache: 'no-store'
-        })
+            method: "DELETE"
+        });
 
         if (!res.ok) {
             const errorData = await res.json();
             throw new Error(errorData.message)
         }
-
-        return res.json();
     }
 
-    async createDoctor(doctorData: {
-        name: string;
-        crm: string;
-        specialty: string;
-        about: string;
-        photoUrl: string;
-    }): Promise<DoctorProps> {
-        const res = await fetch(`${API_URL}/doctors`, {
-            method: 'POST',
-            headers: this.headers,
-            body: JSON.stringify(doctorData),
-        })
-
-        if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.message)
-        }
-
-        return res.json();
-    }
-
+    
 }

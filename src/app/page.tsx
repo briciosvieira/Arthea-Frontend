@@ -21,7 +21,6 @@ export default function Home() {
       <Link href={'https://wa.me/5571981441233'} >
         <Image width={60} alt="whats" src={whatsLogo} className="fixed bottom-10 right-4 z-50" />
       </Link>
-
     </main>
   );
 }

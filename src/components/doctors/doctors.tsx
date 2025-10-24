@@ -5,11 +5,15 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
 import { Service } from "../services/service";
 import { DoctorProps } from "../types/doctorProps";
+import { FormsDoctor } from "./forms";
 
 export function Doctors() {
 
     const service = new Service();
     const [doctors, setDoctors] = useState<DoctorProps[]>([])
+
+    const [showForm, setShowForm] = useState(false);
+    const [selectedDoctor, setSelectedDoctor] = useState<DoctorProps | null>(null);
 
     const [page, setPage] = useState(1)
     const itemsPerPage = 5
@@ -35,6 +39,42 @@ export function Doctors() {
         }
     }
 
+    // abrir form para criar
+    const handleCreate = () => {
+        setSelectedDoctor(null);
+        setShowForm(true);
+    };
+
+    // abrir form para editar
+    const handleEdit = (doctor: DoctorProps) => {
+        setSelectedDoctor(doctor);
+        setShowForm(true);
+    };
+
+    //deletar o medico
+    const handleDelete = async (id: string) => {
+        const confirmed = confirm("Tem certeza que deseja excluir este médico?");
+        if (!confirmed) return;
+
+        try {
+            await service.deleteDoctor(id);
+            await loadDoctors();
+
+            // Se a página atual ficar vazia, volta para a anterior
+            if ((page - 1) * itemsPerPage >= doctors.length - 1) {
+                setPage((p) => Math.max(1, p - 1));
+            }
+
+            alert("Médico deletado com sucesso!");
+        } catch (error) {
+            if (error instanceof Error) {
+                alert(`Erro ao deletar médico: ${error.message}`);
+            } else {
+                alert("Erro desconhecido.");
+            }
+        }
+    };
+
     useEffect(() => {
         loadDoctors();
     })
@@ -57,7 +97,8 @@ export function Doctors() {
                     />
 
                     <button className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1  rounded-md cursor-pointer"
-                    >Novo</button>
+                        onClick={handleCreate}
+                    >Cadastrar novo Médico</button>
                 </div>
 
                 <div>
@@ -82,13 +123,13 @@ export function Doctors() {
 
                             <div className="flex gap-2 justify-end">
                                 <button
-                                    //onClick={() => handleEdit(doctor)}
+                                    onClick={() => handleEdit(doctor)}
                                     className="text-blue-600 hover:bg-blue-700 p-2 rounded-sm hover:text-white cursor-pointer"
                                 >
                                     <FiEdit />
                                 </button>
                                 <button
-                                    //onClick={() => handleDelete(doctor.id)}
+                                    onClick={() => handleDelete(doctor.id)}
                                     className="text-red-600 hover:bg-red-700 p-2 rounded-sm hover:text-white cursor-pointer"
                                 >
                                     <FaRegTrashAlt />
@@ -126,6 +167,14 @@ export function Doctors() {
                     </button>
                 </div>
             </section>
+            {/* Modal de criação/edição */}
+            {showForm && (
+                <FormsDoctor
+                    doctor={selectedDoctor}
+                    onClose={() => setShowForm(false)}
+                    onSaved={loadDoctors}
+                />
+            )}
         </main>
     )
 }

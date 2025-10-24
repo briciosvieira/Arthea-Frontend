@@ -1,5 +1,3 @@
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
 import type { Metadata } from "next";
 import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
@@ -24,7 +22,6 @@ export default function RootLayout({
       <body
         className={josefin.className }
       >
-        
         {children}
       </body>
     </html>
