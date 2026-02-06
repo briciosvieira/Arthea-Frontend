@@ -23,19 +23,19 @@ export function Slide() {
   return (
     <main className="w-full py-10 px-10 bg-[#FFF]">
       <section className="max-w-7xl mx-auto p-5">
-        
-        {/* Título Principal */}
-        <div className="flex flex-col items-center justify-center mb-10">
-          <h2 className="text-2xl mx-4 sm:text-3xl self-start font-semibold mb-6 mt-10 text-[#606958]">
+
+        <div className="flex flex-col items-center justify-center">
+          <h2 className="relative inline-block text-2xl mx-4 sm:text-3xl self-start font-semibold mb-6 text-[#080808] after:content-[''] after:block after:w-1/2 after:h-[3px] after:bg-[#2f4440] after:mt-1">
             Um pouco da Nossa Estrutura
           </h2>
         </div>
 
+
         {/* Seção Recepção */}
-        <h3 className="mx-4 text-2xl self-start font-semibold mb-6 text-[#606958]">
+        <h3 className="mx-4 text-2xl self-start font-semibold mb-6 text-[#000000] ">
           Recepção
         </h3>
-        
+
         <div className="mb-10">
           <Swiper
             centeredSlides
@@ -71,10 +71,10 @@ export function Slide() {
         </div>
 
         {/* Seção Consultórios */}
-        <h3 className="mx-4 text-2xl self-start font-semibold mb-6 mt-10 text-[#606958]">
+        <h3 className="mx-4 text-2xl self-start font-semibold mb-6 mt-10 text-[#070707]">
           Consultórios
         </h3>
-        
+
         <div>
           <Swiper
             centeredSlides

@@ -63,7 +63,7 @@ export function FormsUser({ user, onClose, onSaved }: FormsUserProps) {
 
 
     return (
-        <main className="fixed inset-0 bg-[#030303e1] bg-opacity-60 flex items-center justify-center z-50"
+        <main className="fixed inset-0 bg-[#030303e5] bg-opacity-60 flex items-center justify-center z-50"
             onClick={onClose}>
             <section onClick={(e) => e.stopPropagation()}>
                 <form

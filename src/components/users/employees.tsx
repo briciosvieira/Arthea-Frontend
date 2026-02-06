@@ -83,7 +83,7 @@ export function Employees() {
 
     return (
         <main className=" w-[95%] sm:w-full h-max flex items-center justify-center overflow-hidden mt-20">
-            <section className=" flex flex-col w-full max-w-3xl rounded-2xl bg-gray-600 h-max p-4">
+            <section className=" flex flex-col w-full bg-[#3c57526e] max-w-3xl rounded-2xl h-max p-4">
                 <h1 className="text-2xl mb-3">Lista de Usuários Administradores</h1>
 
                 <div className="flex justify-between items-center">
@@ -110,7 +110,7 @@ export function Employees() {
                     {currentPageUsers.map((user) => (
                         <div
                             key={user.id}
-                            className="bg-gray-800 mt-1 p-2 rounded-md grid grid-cols-[2fr_2fr_1fr_auto] items-center"
+                            className="bg-[#3c5752c0] mt-1 p-2 rounded-md grid grid-cols-[2fr_2fr_1fr_auto] items-center"
                         >
                             <span className="text-white font-semibold truncate">
                                 Nome: {user.name}
@@ -153,7 +153,7 @@ export function Employees() {
                         onClick={() => setPage(page - 1)}
                         className={`px-3 py-1 rounded-md ${page === 1
                             ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                            : "bg-gray-700 hover:bg-gray-500 cursor-pointer"
+                            : "bg-gray-500 hover:bg-gray-500 cursor-pointer"
                             }`}
                     >
                         ← Anterior
@@ -168,7 +168,7 @@ export function Employees() {
                         onClick={() => setPage(page + 1)}
                         className={`px-3 py-1 rounded-md ${page === totalPages
                             ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                            : "bg-gray-700 hover:bg-gray-500 cursor-pointer"
+                            : "bg-gray-500 hover:bg-gray-500 cursor-pointer"
                             }`}
                     >
                         Próxima →

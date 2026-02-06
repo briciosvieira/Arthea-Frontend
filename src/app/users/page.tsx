@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function CreateUsers() {
 
   return (
-    <main className="h-screen w-full flex flex-col items-center  bg-gray-700 text-white ">
+    <main className="h-screen w-full flex flex-col items-center  bg-[#36534ea4] text-white ">
       <div className="fixed top-4 right-4">
         <UserIsLogged />
       </div>

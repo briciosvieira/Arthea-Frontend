@@ -8,16 +8,19 @@ import { Videoclip } from "@/components/videoclip";
 import Image from "next/image";
 import Link from "next/link";
 import whatsLogo from '../../public/whartsLogo.png';
+import { Container } from "@/components/container";
 
 export default function Home() {
   return (
     <main className="relative min-h-[calc(100vh-5rem)] animate-slideUp">
       <Header />
-      <Videoclip />
+      <Videoclip /> 
+      <Container>
       <About />
       <Slide />
       <Location />
-      <Footer />
+      </Container>
+     <Footer />
       <Link href={'https://wa.me/5571981441233'} >
         <Image width={60} alt="whats" src={whatsLogo} className="fixed bottom-10 right-4 z-50" />
       </Link>

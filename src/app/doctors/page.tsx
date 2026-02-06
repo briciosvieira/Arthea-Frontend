@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Doctor() {
 
     return (
-        <main className="h-screen w-full flex flex-col items-center bg-gray-600 text-white">
+        <main className="h-screen w-full flex flex-col items-center bg-[#36534ea4] text-white">
             <Doctors />
 
             <Link

@@ -93,7 +93,7 @@ export function Header() {
         <nav className="flex justify-center items-center gap-6 md:gap-10 xl:gap-16 text-[#6e6e6c] text-base md:text-lg whitespace-nowrap">
           <Link
             href="/"
-            className="text-white relative transition-all duration-300 hover:text-[#f5f5f5]
+            className="text-white hidden sm:inline relative transition-all duration-300 hover:text-[#f5f5f5]
               after:absolute after:left-0 after:bottom-0 after:h-[2px]
               after:w-0 after:bg-current after:transition-all after:duration-300
               hover:after:w-full sm:text-[21px]"
@@ -102,7 +102,7 @@ export function Header() {
           </Link>
 
           <Link
-            href="/"
+            href="https://wa.me/5571981441233"
             className="text-white relative transition-all duration-300 hover:text-[#f5f5f5]
               after:absolute after:left-0 after:bottom-0 after:h-[2px]
               after:w-0 after:bg-current after:transition-all after:duration-300
@@ -122,8 +122,8 @@ export function Header() {
           </button>
 
           <Link
-            href="/"
-            className="text-white relative transition-all duration-300 hover:text-[#f5f5f5]
+            href="https://wa.me/5571981441233"
+            className="text-white hidden sm:inline relative transition-all duration-300 hover:text-[#f5f5f5]
               after:absolute after:left-0 after:bottom-0 after:h-[2px]
               after:w-0 after:bg-current after:transition-all after:duration-300
               hover:after:w-full sm:text-[21px]"
@@ -163,14 +163,6 @@ export function Header() {
                     onClick={() => setMenuOpen(false)}
                   >
                     Configuração
-                  </Link>
-
-                  <Link
-                    href="/consultas"
-                    className="block px-4 py-2 hover:bg-gray-100"
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Consultas
                   </Link>
 
                   <Link

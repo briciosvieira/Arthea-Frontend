@@ -80,8 +80,8 @@ export function Doctors() {
     })
 
     return (
-        <main className="w-[95%] sm:w-full h-max flex items-center justify-center overflow-hidden mt-20">
-            <section className="flex flex-col w-full max-w-3xl rounded-2xl bg-gray-700 p-4">
+        <main className="w-[95%] sm:w-full h-max flex items-center  justify-center overflow-hidden mt-20">
+            <section className="flex flex-col w-full max-w-3xl bg-[#3c57526e] rounded-2xl p-4">
                 <h1>Lista de Médicos</h1>
 
                 <div className="justify-between items-center flex mb-3">
@@ -104,7 +104,7 @@ export function Doctors() {
                 <div>
                     {pageDoctors.map((doctor) => (
                         <div key={doctor.id}
-                            className="bg-gray-800 mt-1 p-2 rounded-md grid grid-cols-[2fr_2fr_1fr_auto] items-center"
+                            className="bg-[#3c5752c0] mt-1 p-2 rounded-md grid grid-cols-[2fr_2fr_1fr_auto] items-center"
                         >
                             <span className="text-white font-semibold truncate">
                                 Nome: {doctor.name}
@@ -145,7 +145,7 @@ export function Doctors() {
                         onClick={() => setPage(page - 1)}
                         className={`px-3 py-1 rounded-md ${page === 1
                             ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                            : "bg-gray-700 hover:bg-gray-500 cursor-pointer"
+                            : "bg-gray-500 hover:bg-gray-500 cursor-pointer"
                             }`}
                     >
                         ← Anterior
@@ -160,7 +160,7 @@ export function Doctors() {
                         onClick={() => setPage(page + 1)}
                         className={`px-3 py-1 rounded-md ${page === totalPages
                             ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                            : "bg-gray-700 hover:bg-gray-500 cursor-pointer"
+                            : "bg-gray-500 hover:bg-gray-500 cursor-pointer"
                             }`}
                     >
                         Próxima →
