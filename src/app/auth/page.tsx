@@ -1,10 +1,15 @@
+import type { Metadata } from "next";
 import { LoginForm } from "@/components/auth/login";
 
-export default function Login(){
+export const metadata: Metadata = {
+    title: "Acesso administrativo | Clínica Arthea",
+    description: "Área de autenticação do painel administrativo da Clínica Arthea.",
+};
 
-    return(
-        <main className=" h-screen flex justify-center items-center bg-slate-600">
-            <LoginForm/>
+export default function AuthPage() {
+    return (
+        <main className="flex min-h-screen items-center justify-center bg-[#36534ea4] px-5 py-0">
+            <LoginForm />
         </main>
-    )
+    );
 }

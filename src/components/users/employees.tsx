@@ -1,182 +1,214 @@
 "use client";
 
-
-import { Service } from "@/components/services/service";
-import type { UserProps } from "@/components/types/UserProps";
-import { FormsUser } from "@/components/users/forms";
 import { useEffect, useState } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiEdit } from "react-icons/fi";
-
+import { Service } from "@/app/services/service";
+import type { UserProps } from "@/app/types/UserProps";
+import { FormsUser } from "@/components/users/forms";
+import { useFeedback } from "@/components/ui/feedback-provider";
 
 export function Employees() {
     const service = new Service();
-    const [users, setUsers] = useState<UserProps[]>([]);
- 
+    const { showConfirm, showError, showSuccess } = useFeedback();
 
+    const [users, setUsers] = useState<UserProps[]>([]);
     const [showForm, setShowForm] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserProps | null>(null);
-
-    const [page, setPage] = useState(1)
-    const itemsPerPage = 5
-    const totalPages = Math.ceil(users.length / itemsPerPage);
+    const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
+    const [loading, setLoading] = useState(true);
 
-
-    const loadUsers = async () => {
-        try {
-            const data = await service.getUsers();
-            setUsers(data.users || []);
-        } catch (error) {
-            console.error("Erro ao buscar usuários:", error);
-        }
-    };
-
-    const handleDelete = async (id: string) => {
-        const confirmed = confirm("Tem certeza que deseja excluir este usuário?");
-        if (!confirmed) return
-
-        try {
-            await service.deleteUsers(id);
-            await loadUsers()
-
-            if ((page - 1) * itemsPerPage >= users.length - 1) {
-                setPage((p) => Math.max(1, p - 1));
-            }
-        } catch (error) {
-            if(error instanceof Error ){
-                alert(`Error, você nao tem permissão de Administrador para deletar: ${error.message}`)
-            } else {
-                throw new Error("Erro desconhecido.")
-            }
-         }
-    }
+    const itemsPerPage = 5;
 
     const filteredUsers = users.filter(
-        (user) =>
-            user?.name &&
-            user.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
+        (user) => user?.name && user.name.toLowerCase().includes(searchTerm.toLowerCase().trim())
     );
 
+    const totalPages = Math.max(1, Math.ceil(filteredUsers.length / itemsPerPage));
     const currentPageUsers = filteredUsers.slice(
         (page - 1) * itemsPerPage,
         page * itemsPerPage
     );
 
+    const loadUsers = async () => {
+        try {
+            setLoading(true);
+            const data = await service.getUsers();
+            setUsers(data.users || []);
+        } catch (error) {
+            showError({
+                title: "Não foi possível carregar os administradores",
+                message: error instanceof Error ? error.message : "Ocorreu um erro inesperado ao buscar usuários.",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    // abrir form para criar
     const handleCreate = () => {
         setSelectedUser(null);
         setShowForm(true);
     };
 
-    // abrir form para editar
     const handleEdit = (user: UserProps) => {
         setSelectedUser(user);
         setShowForm(true);
     };
 
+    const handleDelete = (user: UserProps) => {
+        showConfirm({
+            title: "Excluir administrador",
+            message: `Tem certeza que deseja excluir ${user.name}? Essa ação não pode ser desfeita.`,
+            confirmLabel: "Excluir",
+            cancelLabel: "Voltar",
+            onConfirm: async () => {
+                await service.deleteUsers(user.id);
+                await loadUsers();
+
+                setPage((currentPage) => {
+                    const remainingItems = filteredUsers.length - 1;
+                    const nextTotalPages = Math.max(1, Math.ceil(remainingItems / itemsPerPage));
+                    return Math.min(currentPage, nextTotalPages);
+                });
+
+                showSuccess({
+                    title: "Administrador removido",
+                    message: "O usuário foi excluído com sucesso.",
+                    confirmLabel: "Fechar",
+                });
+            },
+        });
+    };
 
     useEffect(() => {
         loadUsers();
     }, []);
 
+    useEffect(() => {
+        if (page > totalPages) {
+            setPage(totalPages);
+        }
+    }, [page, totalPages]);
+
     return (
-        <main className=" w-[95%] sm:w-full h-max flex items-center justify-center overflow-hidden mt-20">
-            <section className=" flex flex-col w-full bg-[#3c57526e] max-w-3xl rounded-2xl h-max p-4">
-                <h1 className="text-2xl mb-3">Lista de Usuários Administradores</h1>
-
-                <div className="flex justify-between items-center">
-
-                    <input
-                        type="text"
-                        placeholder="Pesquisar usuário..."
-                        value={searchTerm}
-                        onChange={(e) => {
-                            setSearchTerm(e.target.value);
-                            setPage(1);
-                        }}
-                        className="bg-gray-200 text-black mt-2 mb-2 rounded-lg px-3 w-64 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    />
+        <main className="mt-2 flex w-full justify-center px-4 pb-1">
+            <section className="w-full  max-w-3xl rounded-[28px] border border-white/15 bg-[#16302c]/85 p- text-white shadow-[0_20px_80px_rgba(8,15,12,0.35)] backdrop-blur-md sm:p-8">
+                <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p className="text-sm uppercase tracking-[0.3em] text-emerald-200/70">Painel administrativo</p>
+                        <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">Administradores cadastrados</h1>
+                        <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">
+                            Controle os acessos administrativos da clínica, mantenha logins organizados e visualize rapidamente quem está ativo.
+                        </p>
+                    </div>
 
                     <button
                         onClick={handleCreate}
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1  rounded-md cursor-pointer"
+                        className="rounded-full bg-[#d9c7a2] px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-[#ead9b7]"
                     >
-                        Novo Usuário
+                        Novo administrador
                     </button>
                 </div>
-                <div>
-                    {currentPageUsers.map((user) => (
-                        <div
-                            key={user.id}
-                            className="bg-[#3c5752c0] mt-1 p-2 rounded-md grid grid-cols-[2fr_2fr_1fr_auto] items-center"
-                        >
-                            <span className="text-white font-semibold truncate">
-                                Nome: {user.name}
-                            </span>
 
-                            <span className="text-gray-400 text-sm truncate">
-                                Login: {user.login}
-                            </span>
+                <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <label className="block w-full max-w-md">
+                        <span className="mb-2 block text-sm text-white/70">Buscar por nome</span>
+                        <input
+                            type="text"
+                            placeholder="Pesquise um administrador"
+                            value={searchTerm}
+                            onChange={(event) => {
+                                setSearchTerm(event.target.value);
+                                setPage(1);
+                            }}
+                            className="w-full rounded-2xl border border-white/15 bg-white/95 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#d9c7a2] focus:ring-2 focus:ring-[#d9c7a2]/40"
+                        />
+                    </label>
 
-                            <span className="text-sm">
-                                Ativo:{" "}
-                                <span className={user.active ? "text-green-400" : "text-red-400"}>
-                                    {user.active ? "Sim" : "Não"}
-                                </span>
-                            </span>
+                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
+                        {filteredUsers.length} registro(s) encontrado(s)
+                    </div>
+                </div>
 
-
-                            <div className="flex gap-2 justify-end">
-                                <button
-                                    onClick={() => handleEdit(user)}
-                                    className="text-blue-600 hover:bg-blue-700 p-2 rounded-sm hover:text-white cursor-pointer"
-                                >
-                                    <FiEdit />
-                                </button>
-                                <button
-                                    onClick={() => handleDelete(user.id)}
-                                    className="text-red-600 hover:bg-red-700 p-2 rounded-sm hover:text-white cursor-pointer"
-                                >
-                                    <FaRegTrashAlt />
-                                </button>
-                            </div>
+                <div className="mt-6 space-y-4">
+                    {loading ? (
+                        <div className="rounded-3xl border border-dashed border-white/15 bg-white/5 px-6 py-12 text-center text-white/70">
+                            Carregando administradores...
                         </div>
+                    ) : currentPageUsers.length === 0 ? (
+                        <div className="rounded-3xl border border-dashed border-white/15 bg-white/5 px-6 py-12 text-center text-white/70">
+                            Nenhum administrador encontrado para o filtro informado.
+                        </div>
+                    ) : (
+                        currentPageUsers.map((user) => (
+                            <article
+                                key={user.id}
+                                className="grid gap-4 rounded-[26px] border border-white/10 bg-[#21413b] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] md:grid-cols-[1.4fr_1fr_0.8fr_auto]"
+                            >
+                                <div className="min-w-0">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">Administrador</p>
+                                    <h2 className="mt-2 truncate text-lg font-semibold">{user.name}</h2>
+                                </div>
 
-                    ))}
+                                <div className="min-w-0">
+                                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">Login</p>
+                                    <p className="mt-2 truncate text-sm text-emerald-100/80">{user.login}</p>
+                                </div>
+
+                                <div>
+                                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">Status</p>
+                                    <p className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${user.active ? "bg-emerald-500/15 text-emerald-200" : "bg-rose-500/15 text-rose-200"}`}>
+                                        {user.active ? "Ativo" : "Inativo"}
+                                    </p>
+                                </div>
+
+                                <div className="flex items-start justify-end gap-2">
+                                    <button
+                                        onClick={() => handleEdit(user)}
+                                        className="rounded-full border border-sky-400/30 bg-sky-500/10 p-3 text-sky-200 transition hover:bg-sky-500/20"
+                                        aria-label={`Editar ${user.name}`}
+                                    >
+                                        <FiEdit />
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(user)}
+                                        className="rounded-full border border-rose-400/30 bg-rose-500/10 p-3 text-rose-200 transition hover:bg-rose-500/20"
+                                        aria-label={`Excluir ${user.name}`}
+                                    >
+                                        <FaRegTrashAlt />
+                                    </button>
+                                </div>
+                            </article>
+                        ))
+                    )}
                 </div>
 
-                <div className="flex justify-between items-center mt-4">
-                    <button
-                        disabled={page === 1}
-                        onClick={() => setPage(page - 1)}
-                        className={`px-3 py-1 rounded-md ${page === 1
-                            ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                            : "bg-gray-500 hover:bg-gray-500 cursor-pointer"
-                            }`}
-                    >
-                        ← Anterior
-                    </button>
-
-                    <span>
-                        Página {page} de {totalPages || 1}
+                <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
+                    <span className="text-white/70">
+                        Página {page} de {totalPages}
                     </span>
 
-                    <button
-                        disabled={page === totalPages}
-                        onClick={() => setPage(page + 1)}
-                        className={`px-3 py-1 rounded-md ${page === totalPages
-                            ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-                            : "bg-gray-500 hover:bg-gray-500 cursor-pointer"
-                            }`}
-                    >
-                        Próxima →
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            disabled={page === 1}
+                            onClick={() => setPage((currentPage) => currentPage - 1)}
+                            className="rounded-full border border-white/15 px-4 py-2 text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                            Anterior
+                        </button>
+
+                        <button
+                            disabled={page === totalPages}
+                            onClick={() => setPage((currentPage) => currentPage + 1)}
+                            className="rounded-full border border-white/15 px-4 py-2 text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
+                        >
+                            Próxima
+                        </button>
+                    </div>
                 </div>
             </section>
 
-            {/* Modal de criação/edição */}
             {showForm && (
                 <FormsUser
                     user={selectedUser}
@@ -185,5 +217,5 @@ export function Employees() {
                 />
             )}
         </main>
-    )
+    );
 }

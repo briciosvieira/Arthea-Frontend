@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins  } from "next/font/google";
 import "./globals.css";
+import { FeedbackProvider } from "@/components/ui/feedback-provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -21,11 +22,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body
         className={poppins.className }
       >
-        {children}
+        <FeedbackProvider>
+          {children}
+        </FeedbackProvider>
       </body>
     </html>
   );
