@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function AuthPage() {
     return (
-        <main className="flex min-h-screen items-center justify-center bg-[#36534ea4] px-5 py-0">
+        <main className="flex min-h-screen items-center justify-center bg-[#EEEBE6] px-5 py-8">
             <LoginForm />
         </main>
     );

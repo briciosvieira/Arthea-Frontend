@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+@keyframes glow-whats {
+  0%, 100% {
+    opacity: 0.45;
+    filter: drop-shadow(0 0 0px rgba(37, 211, 102, 0));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 18px rgba(37, 211, 102, 0.72));
+  }
+}
+
+.animate-glow-whats {
+  animation: glow-whats 2.8s ease-in-out infinite;
+}

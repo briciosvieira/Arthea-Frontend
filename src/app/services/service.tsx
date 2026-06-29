@@ -4,6 +4,25 @@ import type { DoctorProps } from "../types/doctorProps";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
+export interface HeroMedia {
+    type: 'VIDEO' | 'IMAGE';
+    videoPath: string | null;
+    imagePath: string | null;
+}
+
+export interface SliderImage {
+    id: string;
+    section: 'RECEPCAO' | 'CONSULTORIO';
+    filePath: string;
+    active: boolean;
+    order: number;
+}
+
+export interface QuemSomosImage {
+    position: number;
+    filePath: string;
+}
+
 export class ServiceError extends Error {
     status?: number;
 
@@ -16,29 +35,16 @@ export class ServiceError extends Error {
 
 export class Service {
 
-    private getToken(): string | null {
-        if (typeof window === "undefined") return null;
-        return localStorage.getItem("token");
-    }
-
     private get headers() {
-        const token = this.getToken();
-
-        if (!token) {
-            throw new ServiceError("Usuário não autenticado", 401);
-        }
-
         return {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
         };
     }
 
-    private handleExpiredToken(message?: string) {
+    private handleExpiredToken() {
         if (typeof window !== "undefined") {
-            localStorage.removeItem("token");
-            localStorage.removeItem("isLoggedIn");
-            window.location.href = "/";
+            sessionStorage.removeItem("isLoggedIn");
+            window.location.href = "/auth";
         }
     }
 
@@ -80,7 +86,7 @@ export class Service {
         const message = await this.getErrorMessage(res, fallbackMessage);
 
         if (res.status === 401) {
-            this.handleExpiredToken(message);
+            this.handleExpiredToken();
         }
 
         throw new ServiceError(message, res.status);
@@ -89,6 +95,7 @@ export class Service {
     async getUsers(): Promise<{ users: UserProps[]; total: number }> {
         const res = await fetch(`${API_URL}/users`, {
             headers: this.headers,
+            credentials: "include",
             cache: "no-store",
         });
 
@@ -100,6 +107,7 @@ export class Service {
     async getUserById(id: string): Promise<UserProps> {
         const res = await fetch(`${API_URL}/users/${id}`, {
             headers: this.headers,
+            credentials: "include",
         });
 
         await this.ensureSuccess(res, "Usuário não encontrado");
@@ -108,8 +116,9 @@ export class Service {
 
     async deleteUsers(id: string): Promise<void> {
         const res = await fetch(`${API_URL}/users/${id}`, {
+            method: "DELETE",
             headers: this.headers,
-            method: "DELETE"
+            credentials: "include",
         });
 
         await this.ensureSuccess(res, "Erro ao excluir usuário");
@@ -123,6 +132,7 @@ export class Service {
         const res = await fetch(`${API_URL}/users`, {
             method: "POST",
             headers: this.headers,
+            credentials: "include",
             body: JSON.stringify(userData),
         });
 
@@ -138,6 +148,7 @@ export class Service {
         const res = await fetch(`${API_URL}/users/${id}`, {
             method: "PUT",
             headers: this.headers,
+            credentials: "include",
             body: JSON.stringify(data),
         });
 
@@ -161,6 +172,7 @@ export class Service {
     async getDoctors(): Promise<{ doctor: DoctorProps[], total: number }> {
         const res = await fetch(`${API_URL}/doctors`, {
             headers: this.headers,
+            credentials: "include",
             cache: 'no-store'
         });
 
@@ -179,17 +191,9 @@ export class Service {
     }
 
     async createDoctor(formData: FormData): Promise<DoctorProps> {
-        const token = this.getToken();
-
-        if (!token) {
-            throw new ServiceError("Usuário não autenticado", 401);
-        }
-
         const res = await fetch(`${API_URL}/doctors`, {
             method: 'POST',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
             body: formData,
         });
 
@@ -199,17 +203,9 @@ export class Service {
     }
 
     async updateDoctor(id: string, formData: FormData): Promise<DoctorProps> {
-        const token = this.getToken();
-
-        if (!token) {
-            throw new ServiceError("Usuário não autenticado", 401);
-        }
-
         const res = await fetch(`${API_URL}/doctors/${id}`, {
             method: 'PUT',
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+            credentials: "include",
             body: formData,
         });
 
@@ -220,12 +216,101 @@ export class Service {
 
     async deleteDoctor(id: string): Promise<void> {
         const res = await fetch(`${API_URL}/doctors/${id}`, {
+            method: "DELETE",
             headers: this.headers,
-            method: "DELETE"
+            credentials: "include",
         });
 
         await this.ensureSuccess(res, "Erro ao excluir médico");
     }
 
-    
+    async getHero(): Promise<HeroMedia> {
+        const res = await fetch(`${API_URL}/media/hero`, { cache: "no-store" });
+        await this.ensureSuccess(res, "Erro ao buscar configuração do hero");
+        return res.json();
+    }
+
+    async updateHeroType(type: 'VIDEO' | 'IMAGE'): Promise<void> {
+        const res = await fetch(`${API_URL}/media/hero/type`, {
+            method: "PATCH",
+            headers: this.headers,
+            credentials: "include",
+            body: JSON.stringify({ type }),
+        });
+        await this.ensureSuccess(res, "Erro ao atualizar tipo do hero");
+    }
+
+    async uploadHeroVideo(formData: FormData): Promise<void> {
+        const res = await fetch(`${API_URL}/media/hero/video`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        });
+        await this.ensureSuccess(res, "Erro ao enviar vídeo");
+    }
+
+    async uploadHeroImage(formData: FormData): Promise<void> {
+        const res = await fetch(`${API_URL}/media/hero/image`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        });
+        await this.ensureSuccess(res, "Erro ao enviar imagem do hero");
+    }
+
+    async getSlider(section: string): Promise<SliderImage[]> {
+        const res = await fetch(`${API_URL}/media/slider/${section}`, { cache: "no-store" });
+        await this.ensureSuccess(res, "Erro ao buscar slider");
+        return res.json();
+    }
+
+    async addSliderImage(section: string, formData: FormData): Promise<void> {
+        const res = await fetch(`${API_URL}/media/slider/${section}`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        });
+        await this.ensureSuccess(res, "Erro ao adicionar imagem ao slider");
+    }
+
+    async updateSliderImage(section: string, id: string, data: { active?: boolean; order?: number }): Promise<void> {
+        const res = await fetch(`${API_URL}/media/slider/${section}/${id}`, {
+            method: "PATCH",
+            headers: this.headers,
+            credentials: "include",
+            body: JSON.stringify(data),
+        });
+        await this.ensureSuccess(res, "Erro ao atualizar imagem");
+    }
+
+    async deleteSliderImage(section: string, id: string): Promise<void> {
+        const res = await fetch(`${API_URL}/media/slider/${section}/${id}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+        await this.ensureSuccess(res, "Erro ao excluir imagem");
+    }
+
+    async getQuemSomos(): Promise<QuemSomosImage[]> {
+        const res = await fetch(`${API_URL}/media/quem-somos`, { cache: "no-store" });
+        await this.ensureSuccess(res, "Erro ao buscar imagens do Quem Somos");
+        return res.json();
+    }
+
+    async uploadQuemSomosImage(position: number, formData: FormData): Promise<void> {
+        const res = await fetch(`${API_URL}/media/quem-somos/${position}`, {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        });
+        await this.ensureSuccess(res, "Erro ao enviar imagem");
+    }
+
+    async deleteQuemSomosImage(position: number): Promise<void> {
+        const res = await fetch(`${API_URL}/media/quem-somos/${position}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+        await this.ensureSuccess(res, "Erro ao remover imagem");
+    }
 }

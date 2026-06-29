@@ -46,15 +46,8 @@ export function Employees() {
         }
     };
 
-    const handleCreate = () => {
-        setSelectedUser(null);
-        setShowForm(true);
-    };
-
-    const handleEdit = (user: UserProps) => {
-        setSelectedUser(user);
-        setShowForm(true);
-    };
+    const handleCreate = () => { setSelectedUser(null); setShowForm(true); };
+    const handleEdit = (user: UserProps) => { setSelectedUser(user); setShowForm(true); };
 
     const handleDelete = (user: UserProps) => {
         showConfirm({
@@ -65,118 +58,89 @@ export function Employees() {
             onConfirm: async () => {
                 await service.deleteUsers(user.id);
                 await loadUsers();
-
-                setPage((currentPage) => {
-                    const remainingItems = filteredUsers.length - 1;
-                    const nextTotalPages = Math.max(1, Math.ceil(remainingItems / itemsPerPage));
-                    return Math.min(currentPage, nextTotalPages);
-                });
-
-                showSuccess({
-                    title: "Administrador removido",
-                    message: "O usuário foi excluído com sucesso.",
-                    confirmLabel: "Fechar",
-                });
+                setPage((cur) => Math.min(cur, Math.max(1, Math.ceil((filteredUsers.length - 1) / itemsPerPage))));
+                showSuccess({ title: "Administrador removido", message: "O usuário foi excluído com sucesso.", confirmLabel: "Fechar" });
             },
         });
     };
 
-    useEffect(() => {
-        loadUsers();
-    }, []);
-
-    useEffect(() => {
-        if (page > totalPages) {
-            setPage(totalPages);
-        }
-    }, [page, totalPages]);
+    useEffect(() => { loadUsers(); }, []);
+    useEffect(() => { if (page > totalPages) setPage(totalPages); }, [page, totalPages]);
 
     return (
-        <main className="mt-2 flex w-full justify-center px-4 pb-1">
-            <section className="w-full  max-w-3xl rounded-[28px] border border-white/15 bg-[#16302c]/85 p- text-white shadow-[0_20px_80px_rgba(8,15,12,0.35)] backdrop-blur-md sm:p-8">
-                <div className="flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <main className="mt-16 flex w-full justify-center px-4 pb-6">
+            <section className="w-full max-w-2xl rounded-2xl border border-white/15 bg-[#16302c]/85 p-4 text-white shadow-[0_12px_48px_rgba(8,15,12,0.3)] backdrop-blur-md sm:p-5">
+
+                {/* Cabeçalho */}
+                <div className="flex flex-col gap-3 border-b border-white/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <p className="text-sm uppercase tracking-[0.3em] text-emerald-200/70">Painel administrativo</p>
-                        <h1 className="mt-2 text-2xl font-semibold sm:text-3xl">Administradores cadastrados</h1>
-                        <p className="mt-2 max-w-2xl text-sm leading-6 text-white/70">
-                            Controle os acessos administrativos da clínica, mantenha logins organizados e visualize rapidamente quem está ativo.
+                        <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-200/70">Painel administrativo</p>
+                        <h1 className="mt-1 text-lg font-semibold sm:text-xl">Administradores cadastrados</h1>
+                        <p className="mt-1 text-xs leading-5 text-white/60">
+                            Controle os acessos administrativos da clínica.
                         </p>
                     </div>
-
                     <button
                         onClick={handleCreate}
-                        className="rounded-full bg-[#d9c7a2] px-5 py-3 text-sm font-semibold text-slate-900 transition hover:bg-[#ead9b7]"
+                        className="rounded-full bg-[#AB8E66] px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#BF9E72]"
                     >
                         Novo administrador
                     </button>
                 </div>
 
-                <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <label className="block w-full max-w-md">
-                        <span className="mb-2 block text-sm text-white/70">Buscar por nome</span>
+                {/* Busca */}
+                <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <label className="block w-full max-w-xs">
+                        <span className="mb-1 block text-xs text-white/60">Buscar por nome</span>
                         <input
                             type="text"
                             placeholder="Pesquise um administrador"
                             value={searchTerm}
-                            onChange={(event) => {
-                                setSearchTerm(event.target.value);
-                                setPage(1);
-                            }}
-                            className="w-full rounded-2xl border border-white/15 bg-white/95 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#d9c7a2] focus:ring-2 focus:ring-[#d9c7a2]/40"
+                            onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+                            className="w-full rounded-xl border border-white/15 bg-white/95 px-3 py-2 text-xs text-slate-900 outline-none placeholder:text-slate-400 focus:border-[#AB8E66] focus:ring-2 focus:ring-[#AB8E66]/30"
                         />
                     </label>
-
-                    <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/70">
-                        {filteredUsers.length} registro(s) encontrado(s)
+                    <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/60">
+                        {filteredUsers.length} registro(s)
                     </div>
                 </div>
 
-                <div className="mt-6 space-y-4">
+                {/* Lista */}
+                <div className="mt-3 space-y-2">
                     {loading ? (
-                        <div className="rounded-3xl border border-dashed border-white/15 bg-white/5 px-6 py-12 text-center text-white/70">
+                        <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 py-8 text-center text-xs text-white/60">
                             Carregando administradores...
                         </div>
                     ) : currentPageUsers.length === 0 ? (
-                        <div className="rounded-3xl border border-dashed border-white/15 bg-white/5 px-6 py-12 text-center text-white/70">
-                            Nenhum administrador encontrado para o filtro informado.
+                        <div className="rounded-2xl border border-dashed border-white/15 bg-white/5 py-8 text-center text-xs text-white/60">
+                            Nenhum administrador encontrado.
                         </div>
                     ) : (
                         currentPageUsers.map((user) => (
                             <article
                                 key={user.id}
-                                className="grid gap-4 rounded-[26px] border border-white/10 bg-[#21413b] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.18)] md:grid-cols-[1.4fr_1fr_0.8fr_auto]"
+                                className="grid gap-3 rounded-xl border border-white/10 bg-[#21413b] p-3 md:grid-cols-[1.4fr_1fr_0.7fr_auto]"
                             >
                                 <div className="min-w-0">
-                                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">Administrador</p>
-                                    <h2 className="mt-2 truncate text-lg font-semibold">{user.name}</h2>
+                                    <p className="text-[9px] uppercase tracking-[0.22em] text-white/40">Administrador</p>
+                                    <h2 className="mt-1 truncate text-sm font-semibold">{user.name}</h2>
                                 </div>
-
                                 <div className="min-w-0">
-                                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">Login</p>
-                                    <p className="mt-2 truncate text-sm text-emerald-100/80">{user.login}</p>
+                                    <p className="text-[9px] uppercase tracking-[0.22em] text-white/40">Login</p>
+                                    <p className="mt-1 truncate text-xs text-emerald-100/80">{user.login}</p>
                                 </div>
-
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">Status</p>
-                                    <p className={`mt-2 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${user.active ? "bg-emerald-500/15 text-emerald-200" : "bg-rose-500/15 text-rose-200"}`}>
+                                    <p className="text-[9px] uppercase tracking-[0.22em] text-white/40">Status</p>
+                                    <p className={`mt-1 inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${user.active ? "bg-emerald-500/15 text-emerald-200" : "bg-rose-500/15 text-rose-200"}`}>
                                         {user.active ? "Ativo" : "Inativo"}
                                     </p>
                                 </div>
-
-                                <div className="flex items-start justify-end gap-2">
-                                    <button
-                                        onClick={() => handleEdit(user)}
-                                        className="rounded-full border border-sky-400/30 bg-sky-500/10 p-3 text-sky-200 transition hover:bg-sky-500/20"
-                                        aria-label={`Editar ${user.name}`}
-                                    >
-                                        <FiEdit />
+                                <div className="flex items-center gap-1.5">
+                                    <button onClick={() => handleEdit(user)} className="rounded-full border border-sky-400/30 bg-sky-500/10 p-2 text-sky-200 transition hover:bg-sky-500/20" aria-label={`Editar ${user.name}`}>
+                                        <FiEdit size={13} />
                                     </button>
-                                    <button
-                                        onClick={() => handleDelete(user)}
-                                        className="rounded-full border border-rose-400/30 bg-rose-500/10 p-3 text-rose-200 transition hover:bg-rose-500/20"
-                                        aria-label={`Excluir ${user.name}`}
-                                    >
-                                        <FaRegTrashAlt />
+                                    <button onClick={() => handleDelete(user)} className="rounded-full border border-rose-400/30 bg-rose-500/10 p-2 text-rose-200 transition hover:bg-rose-500/20" aria-label={`Excluir ${user.name}`}>
+                                        <FaRegTrashAlt size={13} />
                                     </button>
                                 </div>
                             </article>
@@ -184,38 +148,17 @@ export function Employees() {
                     )}
                 </div>
 
-                <div className="mt-6 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm sm:flex-row sm:items-center sm:justify-between">
-                    <span className="text-white/70">
-                        Página {page} de {totalPages}
-                    </span>
-
-                    <div className="flex items-center gap-3">
-                        <button
-                            disabled={page === 1}
-                            onClick={() => setPage((currentPage) => currentPage - 1)}
-                            className="rounded-full border border-white/15 px-4 py-2 text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
-                        >
-                            Anterior
-                        </button>
-
-                        <button
-                            disabled={page === totalPages}
-                            onClick={() => setPage((currentPage) => currentPage + 1)}
-                            className="rounded-full border border-white/15 px-4 py-2 text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
-                        >
-                            Próxima
-                        </button>
+                {/* Paginação */}
+                <div className="mt-3 flex flex-col gap-2 border-t border-white/10 pt-3 text-xs sm:flex-row sm:items-center sm:justify-between">
+                    <span className="text-white/60">Página {page} de {totalPages}</span>
+                    <div className="flex items-center gap-2">
+                        <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="rounded-full border border-white/15 px-3 py-1.5 text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40">Anterior</button>
+                        <button disabled={page === totalPages} onClick={() => setPage((p) => p + 1)} className="rounded-full border border-white/15 px-3 py-1.5 text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40">Próxima</button>
                     </div>
                 </div>
             </section>
 
-            {showForm && (
-                <FormsUser
-                    user={selectedUser}
-                    onClose={() => setShowForm(false)}
-                    onSaved={loadUsers}
-                />
-            )}
+            {showForm && <FormsUser user={selectedUser} onClose={() => setShowForm(false)} onSaved={loadUsers} />}
         </main>
     );
 }

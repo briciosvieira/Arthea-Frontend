@@ -20,42 +20,27 @@ export function LoginForm() {
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/auth`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    login: login.trim(),
-                    password,
-                }),
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ login: login.trim(), password }),
                 credentials: "include",
             });
 
             if (!res.ok) {
                 let message = "Usuário ou senha incorretos.";
-
                 try {
-                    const errorData = await res.json();
-                    if (typeof errorData?.message === "string" && errorData.message.trim()) {
-                        message = errorData.message;
-                    }
-                } catch {
-                }
-
+                    const err = await res.json();
+                    if (typeof err?.message === "string" && err.message.trim()) message = err.message;
+                } catch {}
                 throw new Error(message);
             }
 
-            const data = await res.json();
-
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("isLoggedIn", "true");
+            sessionStorage.setItem("isLoggedIn", "true");
             window.dispatchEvent(new Event("loginStatusChanged"));
-
             router.push("/");
         } catch (error) {
-            console.error(error);
             showError({
                 title: "Não foi possível entrar",
-                message: error instanceof Error ? error.message : "Ocorreu um erro inesperado ao tentar autenticar.",
+                message: error instanceof Error ? error.message : "Ocorreu um erro inesperado.",
                 confirmLabel: "Fechar",
             });
         } finally {
@@ -64,94 +49,97 @@ export function LoginForm() {
     }
 
     return (
-        <form onSubmit={handleLogin} className="w-full max-w-5xl">
-            <div className="grid overflow-hidden rounded-[32px] border border-white/10 bg-[#f5efe6] shadow-[0_32px_100px_rgba(15,23,42,0.35)] lg:grid-cols-[1fr_460px]">
-                <div className="hidden bg-[linear-gradient(145deg,#17312d_0%,#24443d_58%,#2f534a_100%)] p-10 text-white lg:flex lg:flex-col lg:justify-between">
+        <form onSubmit={handleLogin} className="w-full max-w-[840px]">
+            <div className="grid overflow-hidden rounded-[22px] border border-black/5 bg-[#EEEBE6] shadow-[0_16px_56px_rgba(15,23,42,0.12)] lg:grid-cols-[1fr_1.15fr]">
+
+                {/* ── Coluna esquerda ── */}
+                <div className="hidden bg-[linear-gradient(145deg,#3d4435_0%,#606958_62%,#737a65_100%)] p-7 text-white lg:flex lg:flex-col lg:justify-between">
                     <div>
-                        <p className="text-xs uppercase tracking-[0.34em] text-[#d9c7a2]">
+                        <p className="text-[10px] uppercase tracking-[0.34em] text-[#FCE7B8]">
                             Clínica Arthea
                         </p>
-                        <h1 className="mt-5 text-4xl font-semibold leading-tight">
-                            Acesso administrativo com visual mais consistente e profissional.
-                        </h1>
-                        <p className="mt-6 max-w-md text-base leading-8 text-white/75">
-                            Entre no painel para gerenciar médicos, administradores e informações da clínica com mais organização.
-                        </p>
-                    </div>
-
-                    <div className="grid gap-4">
-                        <div className="rounded-[24px] border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
-                            <p className="text-[11px] uppercase tracking-[0.28em] text-[#d9c7a2]">Gestão</p>
-                            <p className="mt-3 text-sm leading-7 text-white/80">
-                                Controle de acessos, cadastros e operação do painel interno.
-                            </p>
-                        </div>
-
-                        <div className="rounded-[24px] border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
-                            <p className="text-[11px] uppercase tracking-[0.28em] text-[#d9c7a2]">Segurança</p>
-                            <p className="mt-3 text-sm leading-7 text-white/80">
-                                Área restrita para uso administrativo da equipe autorizada.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="p-6 sm:p-10">
-                    <div className="mx-auto max-w-md">
-                        <p className="text-xs uppercase tracking-[0.3em] text-[#606958]">
+                        <h1 className="mt-3 text-2xl font-semibold leading-snug">
                             Acesso administrativo
+                        </h1>
+                        <p className="mt-2.5 text-sm leading-6 text-white/75">
+                            Gerencie médicos, administradores e informações da clínica com organização e segurança.
                         </p>
-                        <h2 className="mt-4 text-3xl font-semibold text-[#17312d]">
-                            Entrar no painel
-                        </h2>
-                        <p className="mt-3 text-sm leading-7 text-[#55635f]">
-                            Use suas credenciais para acessar a área interna da Clínica Arthea.
-                        </p>
+                    </div>
 
-                        <div className="mt-8 grid gap-5">
-                            <label className="flex flex-col gap-2">
-                                <span className="text-sm font-medium text-slate-700">Login</span>
-                                <input
-                                    type="text"
-                                    placeholder="Digite seu login"
-                                    value={login}
-                                    onChange={(event) => setLogin(event.target.value)}
-                                    className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#17312d] focus:ring-2 focus:ring-[#17312d]/20"
-                                    required
-                                />
-                            </label>
-
-                            <label className="flex flex-col gap-2">
-                                <span className="text-sm font-medium text-slate-700">Senha</span>
-                                <input
-                                    type="password"
-                                    placeholder="Digite sua senha"
-                                    value={password}
-                                    onChange={(event) => setPassword(event.target.value)}
-                                    className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#17312d] focus:ring-2 focus:ring-[#17312d]/20"
-                                    required
-                                />
-                            </label>
+                    {/* Cards lado a lado */}
+                    <div className="mt-5 grid grid-cols-2 gap-2.5">
+                        <div className="rounded-xl border border-white/10 bg-white/10 p-3.5 backdrop-blur-sm">
+                            <p className="text-[9px] uppercase tracking-[0.26em] text-[#FCE7B8]">Gestão</p>
+                            <p className="mt-2 text-xs leading-5 text-white/72">
+                                Controle de acessos, cadastros e operação interna.
+                            </p>
                         </div>
-
-                        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-                            <Link
-                                href="/"
-                                className="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                            >
-                                Voltar
-                            </Link>
-
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="inline-flex items-center justify-center rounded-full bg-[#17312d] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#21433d] disabled:cursor-not-allowed disabled:opacity-60"
-                            >
-                                {loading ? "Entrando..." : "Acessar painel"}
-                            </button>
+                        <div className="rounded-xl border border-white/10 bg-white/10 p-3.5 backdrop-blur-sm">
+                            <p className="text-[9px] uppercase tracking-[0.26em] text-[#FCE7B8]">Segurança</p>
+                            <p className="mt-2 text-xs leading-5 text-white/72">
+                                Área restrita para a equipe autorizada.
+                            </p>
                         </div>
                     </div>
                 </div>
+
+                {/* ── Coluna direita — formulário ── */}
+                <div className="p-6 sm:p-8">
+                    <p className="text-[10px] uppercase tracking-[0.3em] text-[#8A8C76]">
+                        Área restrita
+                    </p>
+                    <h2 className="mt-2 text-xl font-semibold text-[#000000] sm:text-2xl">
+                        Entrar no painel
+                    </h2>
+                    <p className="mt-1.5 text-xs leading-5 text-[#87847D]">
+                        Use suas credenciais para acessar a área interna da Clínica Arthea.
+                    </p>
+
+                    <div className="mt-5 grid gap-3">
+                        <label className="flex flex-col gap-1.5">
+                            <span className="text-xs font-medium text-slate-700">Login</span>
+                            <input
+                                type="text"
+                                placeholder="Digite seu login"
+                                value={login}
+                                onChange={(e) => setLogin(e.target.value)}
+                                className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#606958] focus:ring-2 focus:ring-[#606958]/20"
+                                required
+                                autoComplete="username"
+                            />
+                        </label>
+
+                        <label className="flex flex-col gap-1.5">
+                            <span className="text-xs font-medium text-slate-700">Senha</span>
+                            <input
+                                type="password"
+                                placeholder="Digite sua senha"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-[#606958] focus:ring-2 focus:ring-[#606958]/20"
+                                required
+                                autoComplete="current-password"
+                            />
+                        </label>
+                    </div>
+
+                    <div className="mt-5 flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-between">
+                        <Link
+                            href="/"
+                            className="inline-flex items-center justify-center rounded-full border border-slate-300 px-5 py-2.5 text-xs font-medium text-slate-700 transition hover:bg-slate-100"
+                        >
+                            Voltar
+                        </Link>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="inline-flex items-center justify-center rounded-full bg-[#606958] px-6 py-2.5 text-xs font-semibold text-white transition hover:bg-[#4f5748] disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                            {loading ? "Entrando..." : "Acessar painel"}
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </form>
     );
