@@ -48,11 +48,11 @@ export function Videoclip() {
             <div className="relative z-10 mx-auto flex min-h-[540px] lg:min-h-[610px] max-w-7xl items-center px-4 pb-8 pt-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-10">
                 <div className="max-w-xl">
                     <p className="text-[10px] uppercase tracking-[0.34em] text-[#FCE7B8]">
-                        Clínica Arthea
+                        Consultório Arthea
                     </p>
 
                     <h1 className="mt-3 text-2xl font-semibold leading-tight text-white sm:text-3xl lg:text-4xl">
-                        Sua clínica.<br />
+                        Seu consultório.<br />
                         <span className="text-[#FCE7B8]">Seu espaço.</span>
                     </h1>
 
