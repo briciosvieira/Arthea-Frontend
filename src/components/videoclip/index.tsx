@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Service } from "@/app/services/service";
+import { Service, getSocialLinksPublic, getWhatsAppUrl } from "@/app/services/service";
 import type { HeroMedia } from "@/app/services/service";
 
 const service = new Service();
 
 export function Videoclip() {
     const [hero, setHero] = useState<HeroMedia | null>(null);
+    const [waUrl, setWaUrl] = useState("https://wa.me/5571981441233");
 
     useEffect(() => {
         service.getHero().then(setHero).catch(() => {});
+        getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links))).catch(() => {});
     }, []);
 
     const apiUrl = process.env.NEXT_PUBLIC_URL;
@@ -61,7 +63,9 @@ export function Videoclip() {
                     <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
                         <Link
                             className="inline-flex items-center justify-center rounded-full bg-[#AB8E66] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#BF9E72]"
-                            href="https://wa.me/5571981441233"
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
                         >
                             Quero saber mais
                         </Link>

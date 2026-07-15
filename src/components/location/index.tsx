@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Location() {
     return (
-        <section className="w-full bg-[#EEEBE6] py-8 lg:py-10">
+        <section id="localizacao" className="w-full bg-[#EEEBE6] py-8 lg:py-10">
             <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8 items-center">
 

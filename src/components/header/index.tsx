@@ -8,13 +8,7 @@ import { CiUser } from "react-icons/ci";
 import { IoClose } from "react-icons/io5";
 import { SlMenu } from "react-icons/sl";
 import LogoImg from "../../../public/logoSF.png";
-
-const publicLinks = [
-  { label: "Início", href: "/", type: "link" as const },
-  { label: "Alugue seu consultório", href: "https://wa.me/5571981441233", type: "link" as const },
-  { label: "Quem somos", href: "about", type: "scroll" as const },
-  { label: "Contato", href: "https://wa.me/5571981441233", type: "link" as const },
-];
+import { getSocialLinksPublic, getWhatsAppUrl } from "@/app/services/service";
 
 export function Header() {
   const router = useRouter();
@@ -23,6 +17,18 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [waUrl, setWaUrl] = useState("https://wa.me/5571981441233");
+
+  const publicLinks = [
+    { label: "Início",                 href: "/",     type: "link" as const,   external: false },
+    { label: "Alugue seu consultório", href: waUrl,   type: "link" as const,   external: true  },
+    { label: "Quem somos",             href: "about", type: "scroll" as const, external: false },
+    { label: "Contato",                href: waUrl,   type: "link" as const,   external: true  },
+  ];
+
+  useEffect(() => {
+    getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links))).catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -31,11 +37,7 @@ export function Header() {
   }, []);
 
   useEffect(() => {
-    const checkLogin = () => {
-      const stored = sessionStorage.getItem("isLoggedIn");
-      setIsLogged(stored === "true");
-    };
-
+    const checkLogin = () => setIsLogged(sessionStorage.getItem("isLoggedIn") === "true");
     checkLogin();
     window.addEventListener("loginStatusChanged", checkLogin);
     return () => window.removeEventListener("loginStatusChanged", checkLogin);
@@ -43,11 +45,8 @@ export function Header() {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as HTMLElement).closest(".menu-dropdown")) {
-        setMenuOpen(false);
-      }
+      if (!(event.target as HTMLElement).closest(".menu-dropdown")) setMenuOpen(false);
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
@@ -61,29 +60,30 @@ export function Header() {
   const handleLogin = () => router.push("/auth");
 
   const handleLogout = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_URL}/auth/logout`, {
-      method: "POST",
-      credentials: "include",
-    }).catch(() => {});
+    await fetch(`${process.env.NEXT_PUBLIC_URL}/auth/logout`, { method: "POST", credentials: "include" }).catch(() => {});
     sessionStorage.removeItem("isLoggedIn");
     setIsLogged(false);
     setMenuOpen(false);
     router.push("/");
   };
 
-  const assistedPageScrolling = (id: string) => {
+  const assistedPageScrolling = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   const handlePublicLinkClick = (link: (typeof publicLinks)[number]) => {
     setMobileMenuOpen(false);
     if (link.type === "scroll") assistedPageScrolling(link.href);
   };
 
+  const navLinkClass =
+    "relative text-sm text-white transition-all duration-300 hover:text-white/80 after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full lg:text-[15px]";
+
   return (
     <>
       <header
-        className={`fixed top-0 z-60 flex h-16 w-full items-center justify-between gap-4 px-4 transition-colors duration-500 sm:px-6 lg:px-10 ${scrolled ? "bg-[#606958] text-white shadow-md" : "bg-transparent text-white"}`}
+        className={`fixed top-0 z-60 flex h-16 w-full items-center justify-between gap-4 px-4 transition-colors duration-500 sm:px-6 lg:px-10 ${
+          scrolled ? "bg-[#606958] text-white shadow-md" : "bg-transparent text-white"
+        }`}
       >
         {/* Logo + mobile hamburger */}
         <div className="flex items-center gap-3">
@@ -97,46 +97,28 @@ export function Header() {
           </button>
 
           <Link href="/" className="flex">
-            <Image
-              src={LogoImg}
-              alt="Logo clínica Arthea"
-              width={120}
-              quality={100}
-              priority
-              className="rounded-lg"
-            />
+            <Image src={LogoImg} alt="Logo clínica Arthea" width={120} quality={100} priority className="rounded-lg" />
           </Link>
         </div>
 
         {/* Nav desktop */}
         <nav className="hidden items-center gap-6 xl:gap-10 md:flex">
-          <Link
-            href="/"
-            className="relative text-sm text-white transition-all duration-300 hover:text-white/80 after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full lg:text-[15px]"
-          >
-            Início
-          </Link>
-          <Link
-            href="https://wa.me/5571981441233"
-            className="relative text-sm text-white transition-all duration-300 hover:text-white/80 after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full lg:text-[15px]"
-          >
+          <Link href="/" className={navLinkClass}>Início</Link>
+
+          <Link href={waUrl} target="_blank" rel="noopener noreferrer" className={navLinkClass}>
             Alugue seu consultório
           </Link>
-          <button
-            onClick={() => assistedPageScrolling("about")}
-            className="relative text-sm text-white transition-all duration-300 hover:text-white/80 after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full lg:text-[15px]"
-          >
+
+          <button onClick={() => assistedPageScrolling("about")} className={navLinkClass}>
             Quem somos
           </button>
-          <Link
-            href="https://wa.me/5571981441233"
-            className="relative text-sm text-white transition-all duration-300 hover:text-white/80 after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full lg:text-[15px]"
-          >
+
+          <Link href={waUrl} target="_blank" rel="noopener noreferrer" className={navLinkClass}>
             Contato
           </Link>
         </nav>
 
-        {/* Ações */}
+        {/* Ações (login / admin menu) */}
         <div className="relative flex items-center gap-2">
           {!isLogged ? (
             <button
@@ -158,9 +140,9 @@ export function Header() {
 
               {menuOpen && (
                 <div className="menu-dropdown absolute right-0 top-12 w-40 rounded-2xl border border-white/10 bg-white py-2 text-gray-800 shadow-lg text-sm">
-                  <Link href="/users" className="block px-4 py-2 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Configuração</Link>
+                  <Link href="/users"   className="block px-4 py-2 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Configuração</Link>
                   <Link href="/doctors" className="block px-4 py-2 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Médico</Link>
-                  <Link href="/media" className="block px-4 py-2 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Conteúdo</Link>
+                  <Link href="/media"   className="block px-4 py-2 hover:bg-gray-50" onClick={() => setMenuOpen(false)}>Conteúdo</Link>
                   <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-50">Sair</button>
                 </div>
               )}
@@ -210,6 +192,7 @@ export function Header() {
                   <Link
                     key={link.label}
                     href={link.href}
+                    {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     onClick={() => handlePublicLinkClick(link)}
                     className="rounded-xl border border-[#BEB2A4] bg-white px-4 py-3 text-left text-sm font-medium text-[#606958] transition hover:bg-[#DCDFCE]"
                   >

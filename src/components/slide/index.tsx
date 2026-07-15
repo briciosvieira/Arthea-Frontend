@@ -194,7 +194,7 @@ export function Slide() {
   }, []);
 
   return (
-    <section className="w-full bg-[#606958] py-8">
+    <section id="galeria" className="w-full bg-[#606958] py-8">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div className="mb-5">

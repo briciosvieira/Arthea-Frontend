@@ -23,6 +23,43 @@ export interface QuemSomosImage {
     filePath: string;
 }
 
+export interface Specialty {
+    id: string;
+    name: string;
+    description: string;
+    createdAt: string;
+}
+
+export type SocialLinkType =
+    | 'FACEBOOK' | 'INSTAGRAM' | 'LINKEDIN' | 'WHATSAPP'
+    | 'YOUTUBE'  | 'TIKTOK'    | 'TWITTER'  | 'ADDRESS' | 'OTHER';
+
+export interface SocialLink {
+    id: string;
+    type: SocialLinkType;
+    value: string;
+    label: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+// ── Cache compartilhado para evitar múltiplas requisições na mesma página ──
+let _socialLinksCache: Promise<SocialLink[]> | null = null;
+
+export function getSocialLinksPublic(): Promise<SocialLink[]> {
+    if (!_socialLinksCache) {
+        _socialLinksCache = fetch(`${API_URL}/social-links`, { cache: "no-store" })
+            .then(r => (r.ok ? r.json() : []))
+            .catch(() => { _socialLinksCache = null; return [] as SocialLink[]; });
+    }
+    return _socialLinksCache;
+}
+
+export function getWhatsAppUrl(links: SocialLink[], fallback = "5571981441233"): string {
+    const wa = links.find(l => l.type === "WHATSAPP");
+    return `https://wa.me/${wa?.value ?? fallback}`;
+}
+
 export class ServiceError extends Error {
     status?: number;
 
@@ -312,5 +349,74 @@ export class Service {
             credentials: "include",
         });
         await this.ensureSuccess(res, "Erro ao remover imagem");
+    }
+
+    // ── Especialidades ──────────────────────────────────────────────────────
+
+    async getSpecialties(): Promise<Specialty[]> {
+        const res = await fetch(`${API_URL}/specialties`, { cache: "no-store" });
+        await this.ensureSuccess(res, "Erro ao buscar especialidades");
+        return res.json();
+    }
+
+    async createSpecialty(data: { name: string; description: string }): Promise<Specialty> {
+        const res = await fetch(`${API_URL}/specialties`, {
+            method: "POST",
+            headers: this.headers,
+            credentials: "include",
+            body: JSON.stringify(data),
+        });
+        await this.ensureSuccess(res, "Erro ao criar especialidade");
+        return res.json();
+    }
+
+    async deleteSpecialty(id: string): Promise<void> {
+        const res = await fetch(`${API_URL}/specialties/${id}`, {
+            method: "DELETE",
+            headers: this.headers,
+            credentials: "include",
+        });
+        await this.ensureSuccess(res, "Erro ao excluir especialidade");
+    }
+
+    // ── Redes Sociais ───────────────────────────────────────────────────────
+
+    async getSocialLinks(): Promise<SocialLink[]> {
+        const res = await fetch(`${API_URL}/social-links`, { cache: "no-store" });
+        await this.ensureSuccess(res, "Erro ao buscar redes sociais");
+        return res.json();
+    }
+
+    async createSocialLink(data: { type: string; value: string; label?: string }): Promise<SocialLink> {
+        const body: Record<string, string> = { type: data.type, value: data.value };
+        if (data.label?.trim()) body.label = data.label.trim();
+        const res = await fetch(`${API_URL}/social-links`, {
+            method: "POST",
+            headers: this.headers,
+            credentials: "include",
+            body: JSON.stringify(body),
+        });
+        await this.ensureSuccess(res, "Erro ao criar rede social");
+        return res.json();
+    }
+
+    async updateSocialLink(id: string, data: { type?: string; value?: string; label?: string }): Promise<SocialLink> {
+        const res = await fetch(`${API_URL}/social-links/${id}`, {
+            method: "PATCH",
+            headers: this.headers,
+            credentials: "include",
+            body: JSON.stringify(data),
+        });
+        await this.ensureSuccess(res, "Erro ao atualizar rede social");
+        return res.json();
+    }
+
+    async deleteSocialLink(id: string): Promise<void> {
+        const res = await fetch(`${API_URL}/social-links/${id}`, {
+            method: "DELETE",
+            headers: this.headers,
+            credentials: "include",
+        });
+        await this.ensureSuccess(res, "Erro ao excluir rede social");
     }
 }
