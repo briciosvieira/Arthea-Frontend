@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://clinicaarthea.com.br"),
 
   title: {
-    default: "Clínica Arthea — Espaços para Profissionais de Saúde em Salvador",
-    template: "%s | Clínica Arthea",
+    default: "Consultório Arthea — Espaços para Profissionais de Saúde em Salvador",
+    template: "%s | Consultório Arthea",
   },
 
   description:
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
     "clinicarthea",
   ],
 
-  authors: [{ name: "Clínica Arthea", url: "https://clinicaarthea.com.br" }],
-  creator: "Clínica Arthea",
-  publisher: "Clínica Arthea",
+  authors: [{ name: "Consultório Arthea", url: "https://clinicaarthea.com.br" }],
+  creator: "Consultório Arthea",
+  publisher: "Consultório Arthea",
 
   robots: {
     index: true,
@@ -59,8 +59,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: "https://clinicaarthea.com.br",
-    siteName: "Clínica Arthea",
-    title: "Clínica Arthea — Espaços para Profissionais de Saúde em Salvador",
+    siteName: "Consultório Arthea",
+    title: "Consultório Arthea — Espaços para Profissionais de Saúde em Salvador",
     description:
       "Consultórios modernos na Pituba, Salvador-BA. Infraestrutura completa para profissionais de saúde.",
     images: [
@@ -68,14 +68,14 @@ export const metadata: Metadata = {
         url: "/logoSF.png",
         width: 512,
         height: 512,
-        alt: "Clínica Arthea — Espaços para Profissionais de Saúde",
+        alt: "Consultório Arthea — Espaços para Profissionais de Saúde",
       },
     ],
   },
 
   twitter: {
     card: "summary",
-    title: "Clínica Arthea — Espaços para Profissionais de Saúde",
+    title: "Consultório Arthea — Espaços para Profissionais de Saúde",
     description: "Consultórios modernos na Pituba, Salvador-BA.",
     images: ["/logoSF.png"],
   },
@@ -89,8 +89,8 @@ export const metadata: Metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "MedicalClinic",
-  name: "Clínica Arthea",
-  alternateName: ["Arthea", "Clinica Arthea", "Clinicaarthea"],
+  name: "Consultório Arthea",
+  alternateName: ["Arthea", "Clínica Arthea", "Clinica Arthea", "Clinicaarthea"],
   description:
     "Espaços profissionais para consultas, procedimentos e atendimentos em Salvador, BA. Consultórios modernos na Pituba com infraestrutura completa para profissionais de saúde.",
   url: "https://clinicaarthea.com.br",

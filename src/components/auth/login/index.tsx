@@ -35,6 +35,7 @@ export function LoginForm() {
             }
 
             sessionStorage.setItem("isLoggedIn", "true");
+            document.cookie = "isLoggedIn=true; path=/; SameSite=Strict";
             window.dispatchEvent(new Event("loginStatusChanged"));
             router.push("/");
         } catch (error) {

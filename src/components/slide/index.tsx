@@ -198,7 +198,7 @@ export function Slide() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div className="mb-5">
-          <p className="text-[9px] uppercase tracking-[0.34em] text-[#FCE7B8]">Clínica Arthea</p>
+          <p className="text-[9px] uppercase tracking-[0.34em] text-[#FCE7B8]">Consultório Arthea</p>
           <h2 className="mt-1 text-base font-semibold text-white sm:text-lg">Um pouco do nosso espaço</h2>
           <div className="mt-2 h-[2px] w-5 bg-[#AB8E66]" />
         </div>

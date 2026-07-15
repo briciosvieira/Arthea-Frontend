@@ -62,6 +62,7 @@ export function Header() {
   const handleLogout = async () => {
     await fetch(`${process.env.NEXT_PUBLIC_URL}/auth/logout`, { method: "POST", credentials: "include" }).catch(() => {});
     sessionStorage.removeItem("isLoggedIn");
+    document.cookie = "isLoggedIn=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict";
     setIsLogged(false);
     setMenuOpen(false);
     router.push("/");
@@ -165,7 +166,7 @@ export function Header() {
             <div className="flex items-center justify-between border-b border-[#BEB2A4] pb-4">
               <div>
                 <p className="text-[10px] uppercase tracking-[0.3em] text-[#8A8C76]">Navegação</p>
-                <h2 className="mt-1 text-lg font-semibold text-[#000000]">Clínica Arthea</h2>
+                <h2 className="mt-1 text-lg font-semibold text-[#000000]">Consultório Arthea</h2>
               </div>
               <button
                 type="button"
