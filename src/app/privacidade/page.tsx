@@ -7,7 +7,7 @@ import { ContactInfo } from "@/components/ui/contact-info";
 export const metadata: Metadata = {
     title: "Política de Privacidade",
     description: "Saiba como a Clínica Arthea coleta, usa e protege seus dados pessoais, em conformidade com a LGPD.",
-    alternates: { canonical: "https://clinicaarthea.com.br/privacidade" },
+    alternates: { canonical: "https://artheaconsultorio.com.br/privacidade" },
 };
 
 export default function PrivacidadePage() {

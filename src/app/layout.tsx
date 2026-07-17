@@ -9,7 +9,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://clinicaarthea.com.br"),
+  metadataBase: new URL("https://artheaconsultorio.com.br"),
 
   title: {
     default: "Consultório Arthea — Espaços para Profissionais de Saúde em Salvador",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "clinicarthea",
   ],
 
-  authors: [{ name: "Consultório Arthea", url: "https://clinicaarthea.com.br" }],
+  authors: [{ name: "Consultório Arthea", url: "https://artheaconsultorio.com.br" }],
   creator: "Consultório Arthea",
   publisher: "Consultório Arthea",
 
@@ -52,13 +52,13 @@ export const metadata: Metadata = {
   },
 
   alternates: {
-    canonical: "https://clinicaarthea.com.br",
+    canonical: "https://artheaconsultorio.com.br",
   },
 
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://clinicaarthea.com.br",
+    url: "https://artheaconsultorio.com.br",
     siteName: "Consultório Arthea",
     title: "Consultório Arthea — Espaços para Profissionais de Saúde em Salvador",
     description:
@@ -84,6 +84,10 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/favicon.ico",
   },
+
+  verification: {
+    google: "FF90W2VX0_NYXPx9vYU23TpbTCSWsJzpdQGGOPE5XJw",
+  },
 };
 
 const jsonLd = {
@@ -93,7 +97,7 @@ const jsonLd = {
   alternateName: ["Arthea", "Clínica Arthea", "Clinica Arthea", "Clinicaarthea"],
   description:
     "Espaços profissionais para consultas, procedimentos e atendimentos em Salvador, BA. Consultórios modernos na Pituba com infraestrutura completa para profissionais de saúde.",
-  url: "https://clinicaarthea.com.br",
+  url: "https://artheaconsultorio.com.br",
   telephone: "+55-71-98144-1233",
   address: {
     "@type": "PostalAddress",
@@ -102,7 +106,7 @@ const jsonLd = {
     addressRegion: "BA",
     addressCountry: "BR",
   },
-  image: "https://clinicaarthea.com.br/logoSF.png",
+  image: "https://artheaconsultorio.com.br/logoSF.png",
   sameAs: [
     "https://arthea.com.br",
     "https://clinicarthea.com.br",

@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/auth", "/media", "/users", "/doctors"],
       },
     ],
-    sitemap: "https://clinicaarthea.com.br/sitemap.xml",
+    sitemap: "https://artheaconsultorio.com.br/sitemap.xml",
   };
 }

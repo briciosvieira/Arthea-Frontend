@@ -7,7 +7,7 @@ import { ContactInfo } from "@/components/ui/contact-info";
 export const metadata: Metadata = {
     title: "Termos de Uso",
     description: "Conheça as condições de uso e locação dos espaços profissionais da Clínica Arthea em Pituba, Salvador.",
-    alternates: { canonical: "https://clinicaarthea.com.br/termos" },
+    alternates: { canonical: "https://artheaconsultorio.com.br/termos" },
 };
 
 export default function TermosPage() {

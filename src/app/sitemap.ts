@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE = "https://clinicaarthea.com.br";
+const BASE = "https://artheaconsultorio.com.br";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
