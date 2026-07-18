@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Clínica Arthea oferece consultórios e espaços modernos para profissionais de saúde em Pituba, Salvador — BA. Estrutura completa, localização estratégica e operação simplificada.",
+    "Consultório Arthea oferece espaços modernos para profissionais de saúde em Pituba, Salvador — BA. Estrutura completa, localização estratégica e operação simplificada.",
 
   keywords: [
     "clínica arthea",
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
         url: "/logoSF.png",
         width: 512,
         height: 512,
-        alt: "Consultório Arthea — Espaços para Profissionais de Saúde",
+        alt: "Consultório Arthea, Espaços para Profissionais de Saúde",
       },
     ],
   },
@@ -98,7 +98,7 @@ const jsonLd = {
   description:
     "Espaços profissionais para consultas, procedimentos e atendimentos em Salvador, BA. Consultórios modernos na Pituba com infraestrutura completa para profissionais de saúde.",
   url: "https://artheaconsultorio.com.br",
-  telephone: "+55-71-98144-1233",
+  telephone: "+55-71-99999-9999",
   address: {
     "@type": "PostalAddress",
     streetAddress: "Av. Prof. Magalhães Neto, 1752, Loja 03, Ed. Lena Empresarial, Pituba",
