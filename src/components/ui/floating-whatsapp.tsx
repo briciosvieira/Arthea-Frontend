@@ -6,12 +6,16 @@ import { useEffect, useState } from "react";
 import { getSocialLinksPublic, getWhatsAppUrl } from "@/app/services/service";
 import whatsLogo from "../../../public/whartsLogo.png";
 
+const MSG = "Olá! Acessei o site do Consultório Arthea e gostaria de saber mais sobre os espaços disponíveis.";
+
 export function FloatingWhatsApp() {
-    const [waUrl, setWaUrl] = useState("https://wa.me/5571981441233");
+    const [waUrl, setWaUrl] = useState<string | null>(null);
 
     useEffect(() => {
-        getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links)));
+        getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links, MSG)));
     }, []);
+
+    if (!waUrl) return null;
 
     return (
         <Link
