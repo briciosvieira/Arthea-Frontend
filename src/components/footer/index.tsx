@@ -9,8 +9,6 @@ import { getSocialLinksPublic, getWhatsAppUrl } from "@/app/services/service";
 import type { SocialLink, SocialLinkType } from "@/app/services/service";
 import LogoImg from "../../../public/logoSF.png";
 
-const FALLBACK_WA = "5571981441233";
-const address = "Av. Prof. Magalhães Neto, 1752 — Loja 03\nEd. Lena Empresarial, Pituba\nSalvador — BA";
 
 const ICON_MAP: Partial<Record<SocialLinkType, React.ElementType>> = {
     INSTAGRAM: FaInstagram,
@@ -71,9 +69,16 @@ export function Footer() {
         getSocialLinksPublic().then(setSocialLinks).catch(() => {});
     }, []);
 
-    const waUrl  = getWhatsAppUrl(socialLinks, FALLBACK_WA);
-    const waLink = socialLinks.find(l => l.type === "WHATSAPP");
-    const waTel  = waLink ? formatBrazilPhone(waLink.value) : "+55 (71) 98144-1233";
+    const waLink      = socialLinks.find(l => l.type === "WHATSAPP");
+    const waTel       = waLink ? formatBrazilPhone(waLink.value) : null;
+    const addressLink = socialLinks.find(l => l.type === "ADDRESS");
+
+    const waUrlDuvidas = getWhatsAppUrl(socialLinks, "Olá! Tenho algumas dúvidas sobre o Consultório Arthea. Podem me ajudar?");
+    const waUrlAlugar  = getWhatsAppUrl(socialLinks, "Olá! Tenho interesse em alugar um consultório no Consultório Arthea. Podem me passar informações?");
+    const waUrlPlanos  = getWhatsAppUrl(socialLinks, "Olá! Gostaria de conhecer os planos e horários disponíveis no Consultório Arthea.");
+    const waUrlFalar   = getWhatsAppUrl(socialLinks, "Olá! Acessei o site do Consultório Arthea e gostaria de saber mais.");
+    const waUrlTel     = getWhatsAppUrl(socialLinks, "Olá! Entrei em contato pelo site do Consultório Arthea.");
+    const waUrlIcon    = getWhatsAppUrl(socialLinks, "Olá! Acessei o site do Consultório Arthea e gostaria de saber mais.");
 
     // e-mails registrados como social link (qualquer tipo com @ no valor)
     const emailLinks = socialLinks.filter(l => l.value.includes("@"));
@@ -84,16 +89,16 @@ export function Footer() {
         .sort((a, b) => a.type.localeCompare(b.type));
 
     const colInstitucional: NavLink[] = [
-        { label: "Dúvidas frequentes",      href: waUrl,          external: true },
+        ...(waUrlDuvidas ? [{ label: "Dúvidas frequentes", href: waUrlDuvidas, external: true }] : []),
         { label: "Política de privacidade", href: "/privacidade" },
         { label: "Termos de uso",           href: "/termos" },
     ];
 
     const colProfissional: NavLink[] = [
-        { label: "Alugar consultório",  href: waUrl, external: true },
-        { label: "Planos e horários",   href: waUrl, external: true },
-        { label: "Diferenciais",        href: "/#about" },
-        { label: "Falar no WhatsApp",   href: waUrl, external: true },
+        ...(waUrlAlugar ? [{ label: "Alugar consultório", href: waUrlAlugar, external: true }] : []),
+        ...(waUrlPlanos ? [{ label: "Planos e horários",  href: waUrlPlanos, external: true }] : []),
+        { label: "Diferenciais", href: "/#about" },
+        ...(waUrlFalar  ? [{ label: "Falar no WhatsApp",  href: waUrlFalar,  external: true }] : []),
     ];
 
     return (
@@ -119,13 +124,15 @@ export function Footer() {
                         </p>
 
                         <div className="mt-5 space-y-2 text-xs text-[#EEEBE6]/65">
-                            <p className="leading-5 whitespace-pre-line">{address}</p>
+                            {addressLink?.value && (
+                                <p className="leading-5 whitespace-pre-line">{addressLink.value}</p>
+                            )}
 
                             {/* WhatsApp formatado */}
-                            {waLink && (
+                            {waUrlTel && waTel && (
                                 <p>
                                     <a
-                                        href={waUrl}
+                                        href={waUrlTel}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="transition-colors hover:text-[#EEEBE6]"
@@ -154,7 +161,7 @@ export function Footer() {
                                 {iconLinks.map(({ id, type, value, label }) => {
                                     const Icon = ICON_MAP[type]!;
                                     const href = type === "WHATSAPP"
-                                        ? `https://wa.me/${value}`
+                                        ? (waUrlIcon ?? `https://wa.me/${value}`)
                                         : value;
                                     return (
                                         <a

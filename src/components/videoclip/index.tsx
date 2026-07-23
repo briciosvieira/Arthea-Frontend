@@ -9,17 +9,18 @@ const service = new Service();
 
 export function Videoclip() {
     const [hero, setHero] = useState<HeroMedia | null>(null);
-    const [waUrl, setWaUrl] = useState("https://wa.me/5571981441233");
+    const WA_MSG = "Olá! Visitei o site do Consultório Arthea e gostaria de saber mais sobre os espaços para profissionais de saúde. Podem me ajudar?";
+    const [waUrl, setWaUrl] = useState<string | null>(null);
 
     useEffect(() => {
         service.getHero().then(setHero).catch(() => {});
-        getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links))).catch(() => {});
+        getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links, WA_MSG))).catch(() => {});
     }, []);
 
-    const apiUrl = process.env.NEXT_PUBLIC_URL;
-    const showImage = hero?.type === "IMAGE" && hero.imagePath;
-    const videoSrc = hero?.videoPath ? `${apiUrl}${hero.videoPath}` : "/video/videoclip.mp4";
-    const imageSrc = hero?.imagePath ? `${apiUrl}${hero.imagePath}` : null;
+    const apiUrl   = process.env.NEXT_PUBLIC_URL;
+    const showImage = hero?.type === "IMAGE" && !!hero.imagePath;
+    const videoSrc  = hero?.videoPath ? `${apiUrl}${hero.videoPath}` : null;
+    const imageSrc  = hero?.imagePath ? `${apiUrl}${hero.imagePath}` : null;
 
     const scrollToAbout = () =>
         document.getElementById("about")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -40,7 +41,7 @@ export function Videoclip() {
                         alt="Background da clínica"
                         className="absolute inset-0 h-full w-full object-cover"
                     />
-                ) : (
+                ) : videoSrc ? (
                     <video
                         key={videoSrc}
                         autoPlay
@@ -51,7 +52,7 @@ export function Videoclip() {
                     >
                         <source src={videoSrc} type="video/mp4" />
                     </video>
-                )}
+                ) : null}
 
                 <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(0,0,0,0.80)_0%,rgba(0,0,0,0.48)_50%,rgba(0,0,0,0.18)_100%)]" />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-16 md:h-32 bg-gradient-to-t from-white to-transparent" />
@@ -67,14 +68,16 @@ export function Videoclip() {
                             <span className="text-[#FCE7B8]">Seu espaço.</span>
                         </h1>
                         <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
-                            <Link
-                                href={waUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center rounded-full bg-[#AB8E66] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#BF9E72]"
-                            >
-                                Quero saber mais
-                            </Link>
+                            {waUrl && (
+                                <Link
+                                    href={waUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center justify-center rounded-full bg-[#AB8E66] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#BF9E72]"
+                                >
+                                    Quero saber mais
+                                </Link>
+                            )}
                             <button
                                 type="button"
                                 onClick={scrollToAbout}
@@ -106,14 +109,16 @@ export function Videoclip() {
                 </h1>
 
                 <div className="mt-5 flex flex-col gap-2.5">
-                    <Link
-                        href={waUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center rounded-full bg-[#606958] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f5748]"
-                    >
-                        Quero saber mais
-                    </Link>
+                    {waUrl && (
+                        <Link
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center rounded-full bg-[#606958] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#4f5748]"
+                        >
+                            Quero saber mais
+                        </Link>
+                    )}
                     <button
                         type="button"
                         onClick={scrollToAbout}

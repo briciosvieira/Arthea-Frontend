@@ -9,6 +9,10 @@ import { IoClose } from "react-icons/io5";
 import { SlMenu } from "react-icons/sl";
 import LogoImg from "../../../public/logoSF.png";
 import { getSocialLinksPublic, getWhatsAppUrl } from "@/app/services/service";
+import type { SocialLink } from "@/app/services/service";
+
+const MSG_ALUGAR  = "Olá! Tenho interesse em alugar um consultório no Consultório Arthea. Podem me passar informações?";
+const MSG_CONTATO = "Olá! Gostaria de entrar em contato com o Consultório Arthea.";
 
 export function Header() {
   const router = useRouter();
@@ -17,17 +21,20 @@ export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [waUrl, setWaUrl] = useState("https://wa.me/5571981441233");
+  const [waLinks, setWaLinks] = useState<SocialLink[]>([]);
+
+  const waUrlAlugar  = getWhatsAppUrl(waLinks, MSG_ALUGAR);
+  const waUrlContato = getWhatsAppUrl(waLinks, MSG_CONTATO);
 
   const publicLinks = [
-    { label: "Início",                 href: "/",     type: "link" as const,   external: false },
-    { label: "Alugue seu consultório", href: waUrl,   type: "link" as const,   external: true  },
-    { label: "Quem somos",             href: "about", type: "scroll" as const, external: false },
-    { label: "Contato",                href: waUrl,   type: "link" as const,   external: true  },
+    { label: "Início",    href: "/",    type: "link" as const,   external: false },
+    ...(waUrlAlugar  ? [{ label: "Alugue seu consultório", href: waUrlAlugar,  type: "link" as const, external: true }] : []),
+    { label: "Quem somos", href: "about", type: "scroll" as const, external: false },
+    ...(waUrlContato ? [{ label: "Contato", href: waUrlContato, type: "link" as const, external: true }] : []),
   ];
 
   useEffect(() => {
-    getSocialLinksPublic().then(links => setWaUrl(getWhatsAppUrl(links))).catch(() => {});
+    getSocialLinksPublic().then(setWaLinks).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -106,17 +113,21 @@ export function Header() {
         <nav className="hidden items-center gap-6 xl:gap-10 md:flex">
           <Link href="/" className={navLinkClass}>Início</Link>
 
-          <Link href={waUrl} target="_blank" rel="noopener noreferrer" className={navLinkClass}>
-            Alugue seu consultório
-          </Link>
+          {waUrlAlugar && (
+            <Link href={waUrlAlugar} target="_blank" rel="noopener noreferrer" className={navLinkClass}>
+              Alugue seu consultório
+            </Link>
+          )}
 
           <button onClick={() => assistedPageScrolling("about")} className={navLinkClass}>
             Quem somos
           </button>
 
-          <Link href={waUrl} target="_blank" rel="noopener noreferrer" className={navLinkClass}>
-            Contato
-          </Link>
+          {waUrlContato && (
+            <Link href={waUrlContato} target="_blank" rel="noopener noreferrer" className={navLinkClass}>
+              Contato
+            </Link>
+          )}
         </nav>
 
         {/* Ações (login / admin menu) */}

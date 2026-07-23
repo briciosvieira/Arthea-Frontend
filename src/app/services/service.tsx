@@ -55,9 +55,11 @@ export function getSocialLinksPublic(): Promise<SocialLink[]> {
     return _socialLinksCache;
 }
 
-export function getWhatsAppUrl(links: SocialLink[], fallback = "5571981441233"): string {
+export function getWhatsAppUrl(links: SocialLink[], text?: string): string | null {
     const wa = links.find(l => l.type === "WHATSAPP");
-    return `https://wa.me/${wa?.value ?? fallback}`;
+    if (!wa) return null;
+    const base = `https://wa.me/${wa.value}`;
+    return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
 export class ServiceError extends Error {

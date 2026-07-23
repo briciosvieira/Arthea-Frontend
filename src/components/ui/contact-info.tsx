@@ -15,8 +15,6 @@ function formatBrazilPhone(raw: string): string {
     return `+${d}`;
 }
 
-const FALLBACK_WA    = "5571981441233";
-const FALLBACK_TEL   = "+55 (71) 98144-1233";
 const FALLBACK_EMAIL = "contato@arthea.com.br";
 
 interface Props {
@@ -30,24 +28,29 @@ export function ContactInfo({ variant }: Props) {
         getSocialLinksPublic().then(setLinks).catch(() => {});
     }, []);
 
-    const waLink    = links.find(l => l.type === "WHATSAPP");
-    const waUrl     = getWhatsAppUrl(links, FALLBACK_WA);
-    const waTel     = waLink ? formatBrazilPhone(waLink.value) : FALLBACK_TEL;
-    const emailLink = links.find(l => l.value.includes("@"));
-    const emailAddr = emailLink?.value ?? FALLBACK_EMAIL;
+    const waLink      = links.find(l => l.type === "WHATSAPP");
+    const waUrl       = getWhatsAppUrl(links, "Olá! Li a política do Consultório Arthea e gostaria de entrar em contato.");
+    const waTel       = waLink ? formatBrazilPhone(waLink.value) : null;
+    const emailLink   = links.find(l => l.value.includes("@"));
+    const emailAddr   = emailLink?.value ?? FALLBACK_EMAIL;
+    const addressLink = links.find(l => l.type === "ADDRESS");
 
     if (variant === "inline") {
         return (
             <>
-                <a
-                    href={waUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold hover:underline"
-                >
-                    {waTel}
-                </a>
-                {" ou pelo e-mail "}
+                {waUrl && waTel && (
+                    <>
+                        <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold hover:underline"
+                        >
+                            {waTel}
+                        </a>
+                        {" ou pelo e-mail "}
+                    </>
+                )}
                 <a href={`mailto:${emailAddr}`} className="font-semibold hover:underline">
                     {emailAddr}
                 </a>
@@ -58,19 +61,22 @@ export function ContactInfo({ variant }: Props) {
     return (
         <div className="mt-3 rounded-xl border border-[#BEB2A4] bg-white/60 p-4 text-xs space-y-1">
             <p><strong>Arthea Espaços Profissionais</strong></p>
-            <p>Av. Prof. Magalhães Neto, 1752 — Loja 03, Ed. Lena Empresarial</p>
-            <p>Pituba, Salvador — BA</p>
-            <p>
-                WhatsApp:{" "}
-                <a
-                    href={waUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:underline"
-                >
-                    {waTel}
-                </a>
-            </p>
+            {addressLink?.value && (
+                <p className="whitespace-pre-line">{addressLink.value}</p>
+            )}
+            {waUrl && waTel && (
+                <p>
+                    WhatsApp:{" "}
+                    <a
+                        href={waUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                    >
+                        {waTel}
+                    </a>
+                </p>
+            )}
             <p>
                 E-mail:{" "}
                 <a href={`mailto:${emailAddr}`} className="hover:underline">
