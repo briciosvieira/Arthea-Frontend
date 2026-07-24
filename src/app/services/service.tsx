@@ -45,6 +45,8 @@ export interface SocialLink {
 
 // ── Cache compartilhado para evitar múltiplas requisições na mesma página ──
 let _socialLinksCache: Promise<SocialLink[]> | null = null;
+let _doctorsCache: Promise<import("@/app/types/doctorProps").DoctorProps[]> | null = null;
+let _specialtiesCache: Promise<Specialty[]> | null = null;
 
 export function getSocialLinksPublic(): Promise<SocialLink[]> {
     if (!_socialLinksCache) {
@@ -53,6 +55,32 @@ export function getSocialLinksPublic(): Promise<SocialLink[]> {
             .catch(() => { _socialLinksCache = null; return [] as SocialLink[]; });
     }
     return _socialLinksCache;
+}
+
+export function getDoctorsPublic(): Promise<import("@/app/types/doctorProps").DoctorProps[]> {
+    if (!_doctorsCache) {
+        _doctorsCache = fetch(`${API_URL}/doctors`, { cache: "no-store" })
+            .then(r => {
+                if (!r.ok) return [];
+                return r.json().then((d: { doctor: import("@/app/types/doctorProps").DoctorProps[] }) =>
+                    (d.doctor ?? []).map(doc => ({
+                        ...doc,
+                        photoUrl: doc.photoUrl ? `${API_URL}${doc.photoUrl}` : "",
+                    }))
+                );
+            })
+            .catch(() => { _doctorsCache = null; return []; });
+    }
+    return _doctorsCache;
+}
+
+export function getSpecialtiesPublic(): Promise<Specialty[]> {
+    if (!_specialtiesCache) {
+        _specialtiesCache = fetch(`${API_URL}/specialties`, { cache: "no-store" })
+            .then(r => (r.ok ? r.json() : []))
+            .catch(() => { _specialtiesCache = null; return [] as Specialty[]; });
+    }
+    return _specialtiesCache;
 }
 
 export function getWhatsAppUrl(links: SocialLink[], text?: string): string | null {

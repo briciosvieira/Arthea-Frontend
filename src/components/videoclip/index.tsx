@@ -55,7 +55,7 @@ export function Videoclip() {
                 ) : null}
 
                 <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(0,0,0,0.80)_0%,rgba(0,0,0,0.48)_50%,rgba(0,0,0,0.18)_100%)]" />
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-16 md:h-32 bg-gradient-to-t from-white to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-16 md:h-32 bg-gradient-to-t from-white md:from-[#EEEBE6] to-transparent" />
 
                 {/* Conteúdo sobreposto — tablet e desktop (md+) */}
                 <div className="hidden md:flex relative z-10 mx-auto min-h-[540px] lg:min-h-[610px] max-w-7xl items-center px-4 pb-8 pt-16 sm:px-6 lg:px-8 lg:pt-20 lg:pb-10">
@@ -99,7 +99,7 @@ export function Videoclip() {
             </section>
 
             {/* ── Conteúdo abaixo do vídeo — apenas mobile ── */}
-            <div className="md:hidden bg-white px-4 pt-6 pb-6">
+            <div className="md:hidden bg-white px-4 pt-6 pb-0">
                 <p className="text-sm uppercase tracking-[0.28em] font-semibold text-[#8A8C76]">
                     Consultório Arthea
                 </p>
@@ -137,6 +137,8 @@ export function Videoclip() {
                     ))}
                 </div>
             </div>
+            {/* Faixa de transição mobile: branco → bege do About */}
+            <div className="md:hidden h-8 bg-gradient-to-b from-white to-[#EEEBE6]" />
         </>
     );
 }

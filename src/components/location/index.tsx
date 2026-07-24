@@ -22,10 +22,10 @@ export function Location() {
 
                     {/* Coluna esquerda */}
                     <div>
-                        <p className="text-[9px] font-semibold uppercase tracking-[0.35em] text-[#AB8E66]">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[#AB8E66]">
                             Nossa localização
                         </p>
-                        <h2 className="mt-2 text-lg font-semibold tracking-tight text-black sm:text-xl">
+                        <h2 className="mt-2 text-lg font-semibold tracking-tight text-[#606958] sm:text-xl">
                             Fácil acesso na Pituba, Salvador.
                         </h2>
                         <p className="mt-2 max-w-sm text-xs leading-6 text-[#87847D]">
