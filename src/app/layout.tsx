@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 import { FeedbackProvider } from "@/components/ui/feedback-provider";
+import { CookieConsentProvider } from "@/components/ui/cookie-consent";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -127,7 +128,9 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <FeedbackProvider>{children}</FeedbackProvider>
+        <FeedbackProvider>
+          <CookieConsentProvider>{children}</CookieConsentProvider>
+        </FeedbackProvider>
       </body>
     </html>
   );

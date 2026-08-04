@@ -7,6 +7,7 @@ import { FaFacebook, FaInstagram, FaLinkedin, FaWhatsapp, FaYoutube, FaTwitter }
 import { FaTiktok } from "react-icons/fa6";
 import { getSocialLinksPublic, getWhatsAppUrl } from "@/app/services/service";
 import type { SocialLink, SocialLinkType } from "@/app/services/service";
+import { useCookieConsent } from "@/components/ui/cookie-consent";
 import LogoImg from "../../../public/logoSF.png";
 
 
@@ -31,13 +32,15 @@ function formatBrazilPhone(raw: string): string {
     return `+${d}`;
 }
 
-type NavLink = { label: string; href: string; external?: boolean };
+type NavLink = { label: string; href?: string; onClick?: () => void; external?: boolean };
 
 const colEspaco: NavLink[] = [
     { label: "Sobre",       href: "/#about" },
     { label: "Localização", href: "/#localizacao" },
     { label: "Galeria",     href: "/#galeria" },
 ];
+
+const linkClass = "text-sm text-[#EEEBE6]/65 transition-colors duration-150 hover:text-[#EEEBE6]";
 
 function NavCol({ title, links }: { title: string; links: NavLink[] }) {
     return (
@@ -48,13 +51,23 @@ function NavCol({ title, links }: { title: string; links: NavLink[] }) {
             <ul className="space-y-2.5">
                 {links.map((l) => (
                     <li key={l.label}>
-                        <Link
-                            href={l.href}
-                            {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                            className="text-sm text-[#EEEBE6]/65 transition-colors duration-150 hover:text-[#EEEBE6]"
-                        >
-                            {l.label}
-                        </Link>
+                        {l.onClick ? (
+                            <button
+                                type="button"
+                                onClick={l.onClick}
+                                className={`${linkClass} focus:outline-none focus:text-[#EEEBE6]`}
+                            >
+                                {l.label}
+                            </button>
+                        ) : (
+                            <Link
+                                href={l.href!}
+                                {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                                className={linkClass}
+                            >
+                                {l.label}
+                            </Link>
+                        )}
                     </li>
                 ))}
             </ul>
@@ -64,6 +77,7 @@ function NavCol({ title, links }: { title: string; links: NavLink[] }) {
 
 export function Footer() {
     const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+    const { openPreferences } = useCookieConsent();
 
     useEffect(() => {
         getSocialLinksPublic().then(setSocialLinks).catch(() => {});
@@ -92,6 +106,7 @@ export function Footer() {
         ...(waUrlDuvidas ? [{ label: "Dúvidas frequentes", href: waUrlDuvidas, external: true }] : []),
         { label: "Política de privacidade", href: "/privacidade" },
         { label: "Termos de uso",           href: "/termos" },
+        { label: "Preferências de cookies", onClick: openPreferences },
     ];
 
     const colProfissional: NavLink[] = [
