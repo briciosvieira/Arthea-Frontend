@@ -48,6 +48,7 @@ export function Videoclip() {
                         loop
                         muted
                         playsInline
+                        preload="metadata"
                         className="absolute inset-0 h-full w-full object-cover"
                     >
                         <source src={videoSrc} type="video/mp4" />
@@ -88,7 +89,7 @@ export function Videoclip() {
                         </div>
                         <div className="mt-6 grid gap-2.5 sm:grid-cols-3">
                             {cards.map((card) => (
-                                <div key={card.label} className="rounded-[14px] border border-white/10 bg-white/8 p-3 backdrop-blur-sm">
+                                <div key={card.label} className="rounded-[14px] border border-white/10 bg-white/10 p-3">
                                     <p className="text-[9px] uppercase tracking-[0.28em] text-[#FCE7B8]">{card.label}</p>
                                     <p className="mt-1 text-xs leading-5 text-white/70">{card.text}</p>
                                 </div>

@@ -125,10 +125,15 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
         first?.focus();
     }, [showModal]);
 
-    // Prevent body scroll when modal is open
+    // Prevent body scroll when modal is open — iOS-safe (position: fixed approach)
     useEffect(() => {
-        document.body.style.overflow = showModal ? "hidden" : "";
-        return () => { document.body.style.overflow = ""; };
+        if (!showModal) return;
+        const scrollY = window.scrollY;
+        document.body.style.cssText = `position:fixed;top:-${scrollY}px;left:0;right:0;overflow-y:scroll;`;
+        return () => {
+            document.body.style.cssText = "";
+            window.scrollTo({ top: scrollY, behavior: "instant" as ScrollBehavior });
+        };
     }, [showModal]);
 
     const commit = (c: CookieConsent) => {
@@ -225,13 +230,13 @@ export function CookieConsentProvider({ children }: { children: React.ReactNode 
                     aria-modal="true"
                     aria-label="Gerenciar preferências de cookies"
                 >
-                    {/* Backdrop */}
+                    {/* Backdrop — sem backdrop-blur para evitar artefato GPU no iOS */}
                     <button
                         type="button"
                         aria-label="Fechar preferências"
                         tabIndex={-1}
                         onClick={() => setShowModal(false)}
-                        className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
+                        className="absolute inset-0 bg-slate-950/60"
                     />
 
                     {/* Card */}
